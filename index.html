@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>⚽ Fut Manager Pro - Gestão de Grupos de Futebol</title>
+  <meta name="description" content="Sistema profissional de gerenciamento multi-grupos desenvolvido por Gustavo Tavares Barros - Analista de Sistemas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --bg-glass: rgba(255, 255, 255, 0.03);
+      --bg-glass-hover: rgba(255, 255, 255, 0.06);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glass-hover: rgba(255, 255, 255, 0.15);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.3);
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --accent-whatsapp: #25D366;
+      --sidebar-width: 260px;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* LOGIN SCREEN */
+    .login-container {
+      position: fixed; inset: 0;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #0a0e1a 100%);
+      z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+
+    .login-box {
+      background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass); border-radius: 20px;
+      padding: 32px 24px; width: 100%; max-width: 420px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); text-align: center;
+    }
+
+    .login-logo {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--accent-green), #059669);
+      border-radius: 14px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; box-shadow: 0 8px 25px var(--accent-green-glow);
+    }
+
+    .login-title {
+      font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px;
+    }
+
+    .login-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px; display: block; }
+    .form-control {
+      width: 100%; padding: 11px 14px; background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-glass); border-radius: var(--radius-sm);
+      color: white; font-size: 13.5px; outline: none; transition: var(--transition);
+      -webkit-appearance: none;
+    }
+    .form-control:focus { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.05); }
+
+    .login-tab-btn {
+      background: transparent; border: none; color: var(--text-secondary);
+      font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 6px 12px;
+      border-bottom: 2px solid transparent; margin: 0 4px 16px;
+    }
+    .login-tab-btn.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
+
+    /* BANNER DE TESTES 5 DIAS */
+    .trial-banner {
+      background: linear-gradient(90deg, #059669, #047857);
+      color: white; padding: 10px 16px; font-size: 12.5px; font-weight: 600;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 5000; flex-wrap: wrap; gap: 8px;
+    }
+    .trial-banner.expired { background: linear-gradient(90deg, #dc2626, #991b1b); }
+    .trial-banner button {
+      background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+      color: white; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+
+    /* SIDEBAR DEVELOPER BRANDING */
+    .dev-sidebar-brand {
+      padding: 14px 16px; background: rgba(0, 0, 0, 0.4); border-top: 1px solid var(--border-glass);
+      margin-top: auto; display: flex; align-items: center; gap: 12px;
+    }
+
+    .gb-mini-logo {
+      width: 36px; height: 36px; background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 15px; color: white;
+      flex-shrink: 0; border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dev-sidebar-info h5 { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; color: #f8fafc; }
+    .dev-sidebar-info p { font-size: 10px; color: #60a5fa; font-weight: 500; line-height: 1.2; }
+
+    /* SIDEBAR NAV */
+    .sidebar {
+      position: fixed; left: 0; top: 38px; width: var(--sidebar-width); height: calc(100vh - 38px);
+      background: rgba(17, 24, 39, 0.98); backdrop-filter: blur(20px); border-right: 1px solid var(--border-glass);
+      display: flex; flex-direction: column; z-index: 1000; transition: var(--transition);
+    }
+
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 999; }
+
+    .sidebar-logo {
+      padding: 16px; border-bottom: 1px solid var(--border-glass);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .sidebar-logo .logo-box { display: flex; align-items: center; gap: 10px; }
+
+    .sidebar-logo .logo-icon {
+      width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent-green), #059669);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;
+      overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-logo .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .sidebar-logo h1 {
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-green), #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2;
+    }
+
+    .sidebar-logo span { font-size: 10px; color: var(--text-muted); display: block; -webkit-text-fill-color: var(--text-muted); }
+
+    .sidebar-close-btn { display: none; background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+
+    .sidebar-nav { flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .nav-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); padding: 12px 8px 4px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+      color: var(--text-secondary); font-size: 13px; font-weight: 500; min-height: 42px;
+    }
+    .nav-item:hover, .nav-item:active { background: var(--bg-glass-hover); color: var(--text-primary); }
+    .nav-item.active { background: rgba(16, 185, 129, 0.12); color: var(--accent-green); }
+    .nav-item.logout-item { color: var(--accent-red); margin-top: 6px; border: 1px dashed rgba(239, 68, 68, 0.3); }
+    .nav-item.logout-item:hover { background: rgba(239, 68, 68, 0.15); }
+
+    /* MAIN CONTENT */
+    .main-content { margin-left: var(--sidebar-width); min-height: 100vh; position: relative; z-index: 1; transition: var(--transition); }
+
+    .topbar {
+      position: sticky; top: 38px; padding: 10px 16px;
+      background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: space-between; z-index: 50;
+      gap: 8px;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .mobile-toggle {
+      display: none; width: 38px; height: 38px; background: var(--bg-glass);
+      border: 1px solid var(--border-glass); border-radius: var(--radius-xs); color: var(--text-primary);
+      align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+
+    .topbar h2 { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .admin-chip {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass);
+      padding: 6px 12px; border-radius: 20px; font-size: 11.5px; display: flex; align-items: center; gap: 6px;
+      white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .page-content { padding: 20px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px;
+      border: none; border-radius: var(--radius-sm); font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); min-height: 42px;
+      -webkit-appearance: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-green), #059669); color: white; }
+    .btn-secondary { background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); }
+    .btn-secondary:hover { background: var(--bg-glass-hover); }
+    .btn-whatsapp { background: linear-gradient(135deg, var(--accent-whatsapp), #128C7E); color: white; text-decoration: none; }
+    .btn-danger { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; min-height: 36px; }
+
+    /* STATS & GLASS PANEL */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--bg-glass); backdrop-filter: blur(12px); border: 1px solid var(--border-glass);
+      border-radius: var(--radius); padding: 16px; position: relative; overflow: hidden;
+    }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--accent-green), #34d399); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--accent-blue), #60a5fa); }
+    .stat-card.gold::before { background: linear-gradient(90deg, var(--accent-gold), #fbbf24); }
+    .stat-card.red::before { background: linear-gradient(90deg, var(--accent-red), #f87171); }
+
+    .stat-card-value { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; margin-top: 6px; }
+    .stat-card-label { font-size: 11px; color: var(--text-secondary); }
+
+    .glass-panel {
+      background: var(--bg-glass); backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass); border-radius: var(--radius);
+      padding: 18px; margin-bottom: 20px;
+    }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .panel-title { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+    /* EXCEL TABLE RESPONSIVA MOBILE */
+    .mobile-scroll-hint { display: none; font-size: 11px; color: var(--accent-gold); margin-bottom: 8px; text-align: right; }
+
+    .excel-container {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-sm); border: 1px solid var(--border-glass); background: rgba(10, 14, 26, 0.6);
+    }
+    .excel-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 920px; }
+    .excel-table th { background: rgba(17, 24, 39, 0.98); color: var(--text-secondary); font-size: 10.5px; font-weight: 700; text-transform: uppercase; padding: 10px 6px; text-align: center; border: 1px solid var(--border-glass); }
+    .excel-table td { border: 1px solid rgba(255, 255, 255, 0.05); padding: 4px; text-align: center; }
+
+    .excel-input {
+      width: 100%; background: transparent; border: 1px solid transparent; color: var(--text-primary);
+      padding: 6px 4px; font-size: 13px; border-radius: 4px; text-align: center; outline: none; min-height: 36px;
+    }
+    .excel-input.text-left { text-align: left; }
+    .excel-input.bold { font-weight: 700; }
+    .excel-input:focus { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.1); }
+
+    .status-select { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid transparent; outline: none; min-height: 32px; }
+    .status-select.ativo { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .status-select.lesao { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); }
+    .status-select.saiu { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+
+    .month-status-btn { width: 100%; padding: 6px 2px; font-size: 11px; font-weight: 700; border-radius: 4px; border: none; cursor: pointer; min-height: 34px; }
+    .month-status-btn.pago { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .month-status-btn.pendente { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .month-status-btn.bloqueado { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+    /* CARD DE ARTILHARIA ANIMADO */
+    .card-export-wrapper {
+      background: radial-gradient(circle at top left, #1e1b4b, #0f172a, #020617);
+      border: 2px solid rgba(245, 158, 11, 0.5); border-radius: 20px; padding: 24px 16px;
+      text-align: center; position: relative; overflow: hidden; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+      max-width: 440px; margin: 0 auto;
+    }
+    .card-trophy-glow { font-size: 60px; margin-bottom: 8px; filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.8)); }
+
+    .card-player-name {
+      font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 6px 0 4px; text-transform: uppercase;
+    }
+
+    .card-goals-badge {
+      display: inline-block; padding: 6px 20px; background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: white;
+    }
+
+    /* RANKING & TROPHIES */
+    .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+    .ranking-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); }
+    .ranking-position { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; font-family: 'Outfit'; flex-shrink: 0; }
+    .top-1 .ranking-position { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); }
+    .top-2 .ranking-position { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+    .top-3 .ranking-position { background: rgba(180, 83, 9, 0.2); color: #d97706; }
+
+    .ranking-bar-container { width: 70px; height: 6px; background: rgba(255, 255, 255, 0.05); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+    .ranking-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-green), #34d399); }
+
+    .trophy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .trophy-card { background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: var(--radius); padding: 20px; text-align: center; }
+
+    /* PROFILE BRANDING AVATARS */
+    .logo-preset-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .preset-badge-item {
+      width: 42px; height: 42px; border-radius: 10px; background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer; transition: var(--transition);
+    }
+    .preset-badge-item:hover, .preset-badge-item.active { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.15); }
+
+    /* FOOTER DE DIREITOS AUTORAIS */
+    .app-dev-footer {
+      margin-top: 24px; padding: 16px; background: rgba(17, 24, 39, 0.6);
+      border: 1px solid var(--border-glass); border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .app-dev-footer-info { display: flex; align-items: center; gap: 10px; }
+    .app-dev-footer-text h6 { font-family: 'Outfit'; font-size: 13px; font-weight: 800; color: white; }
+    .app-dev-footer-text p { font-size: 10px; color: #60a5fa; }
+    .app-dev-footer-rights { font-size: 10px; color: var(--text-muted); text-align: right; }
+
+    /* MODAL LICENÇA */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 10000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-glass); border-radius: var(--radius); padding: 24px; max-width: 400px; text-align: center; width: 100%; }
+
+    /* TOAST */
+    .toast-container { position: fixed; top: 50px; right: 16px; left: 16px; z-index: 20000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 8px; pointer-events: auto; }
+    .toast.success { background: rgba(16, 185, 129, 0.95); color: white; }
+    .toast.error { background: rgba(239, 68, 68, 0.95); color: white; }
+
+    /* REGRAS DE ADAPTAÇÃO MOBILE */
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; }
+      .sidebar-close-btn { display: block; }
+      .sidebar { transform: translateX(-100%); top: 0; height: 100vh; }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main-content { margin-left: 0; }
+      .topbar { top: 0; padding: 10px 12px; }
+      .topbar h2 { font-size: 13.5px; }
+      .admin-chip { display: none; }
+      .page-content { padding: 12px; }
+      .mobile-scroll-hint { display: block; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .app-dev-footer { flex-direction: column; text-align: center; }
+      .app-dev-footer-rights { text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN & CADASTRO DE ADMINISTRADOR/GRUPO -->
+  <div class="login-container" id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo">⚽</div>
+      <h2 class="login-title">Fut Manager Pro</h2>
+      <p class="login-sub">Sistema de Gestão de Grupos de Futebol</p>
+
+      <div>
+        <button class="login-tab-btn active" id="tabEntrarBtn" type="button" onclick="switchLoginTab('entrar')">Entrar no Sistema</button>
+        <button class="login-tab-btn" id="tabCadastrarBtn" type="button" onclick="switchLoginTab('cadastrar')">Cadastrar Novo Admin / Grupo</button>
+      </div>
+
+      <!-- FORM LOGIN -->
+      <form id="formLogin" onsubmit="handleLogin(event)" action="javascript:void(0);">
+        <div class="form-group">
+          <label>Usuário Administrador</label>
+          <input type="text" id="loginUsername" class="form-control" placeholder="Digite seu usuário..." required autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Digite sua senha..." required autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+          <span class="material-icons-round">login</span> Acessar Painel
+        </button>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 14px;">
+          Usuário Padrão: <b>admin</b> | Senha: <b>123</b>
+        </p>
+      </form>
+
+      <!-- FORM CADASTRO -->
+      <form id="formCadastrar" onsubmit="handleRegister(event)" action="javascript:void(0);" style="display: none;">
+        <div class="form-group">
+          <label>Nome do Administrador / Gestor</label>
+          <input type="text" id="regAdminName" class="form-control" placeholder="Ex: Carlos Silva" required>
+        </div>
+        <div class="form-group">
+          <label>Nome do Grupo de Futebol / Racha</label>
+          <input type="text" id="regGroupName" class="form-control" placeholder="Ex: Futebol das Quarta-Feiras" required>
+        </div>
+        <div class="form-group">
+          <label>Novo Usuário de Acesso</label>
+          <input type="text" id="regUsername" class="form-control" placeholder="Ex: carlos" required autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="form-group">
+          <label>Senha de Acesso</label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Crie uma senha..." required autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+          <span class="material-icons-round">app_registration</span> Criar Grupo & Acessar
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; border-top: 1px solid var(--border-glass); padding-top: 12px; font-size: 10.5px; color: var(--text-muted);">
+        Desenvolvido por <strong>Gustavo Tavares Barros</strong> · Analista de Sistemas
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER DE TESTES 5 DIAS -->
+  <div class="trial-banner" id="trialBanner">
+    <div id="trialBannerText">
+      ⌛ <strong>PERÍODO DE TESTE GRATUITO:</strong> Calculando...
+    </div>
+    <div>
+      <button type="button" onclick="openLicenseModal()">🔑 Inserir Licença Definitiva</button>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-box">
+        <div class="logo-icon" id="sidebarLogoDisplay">⚽</div>
+        <div>
+          <h1 id="sidebarGroupName">Racha dos Perebas</h1>
+          <span id="sidebarGroupSub">Temporada 2026</span>
+        </div>
+      </div>
+      <button type="button" class="sidebar-close-btn" onclick="closeSidebar()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Visão Geral</div>
+      <div class="nav-item active" data-page="excel" onclick="navigateTo('excel')">
+        <span class="material-icons-round">table_chart</span> Planilha Geral (Excel)
+      </div>
+      <div class="nav-item" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <span class="material-icons-round">dashboard</span> Dashboard
+      </div>
+
+      <div class="nav-label">Financeiro & Caixa</div>
+      <div class="nav-item" data-page="financeiro" onclick="navigateTo('financeiro')">
+        <span class="material-icons-round">account_balance_wallet</span> Caixa (Entradas/Saídas)
+      </div>
+      <div class="nav-item" data-page="devedores" onclick="navigateTo('devedores')">
+        <span class="material-icons-round">receipt_long</span> Pagantes vs Devedores
+      </div>
+      <div class="nav-item" data-page="cobrancas" onclick="navigateTo('cobrancas')">
+        <span class="material-icons-round">send</span> Cobranças WhatsApp
+      </div>
+
+      <div class="nav-label">Competição & Imagens</div>
+      <div class="nav-item" data-page="ranking" onclick="navigateTo('ranking')">
+        <span class="material-icons-round">leaderboard</span> Ranking (Gols/Cartões)
+      </div>
+      <div class="nav-item" data-page="cards-artilharia" onclick="navigateTo('cards-artilharia')">
+        <span class="material-icons-round">style</span> Gerar Cards de Artilharia 📸
+      </div>
+      <div class="nav-item" data-page="trofeus" onclick="navigateTo('trofeus')">
+        <span class="material-icons-round">emoji_events</span> Quadra de Troféus
+      </div>
+
+      <div class="nav-label">Gestor & Conta</div>
+      <div class="nav-item" data-page="perfil" onclick="navigateTo('perfil')">
+        <span class="material-icons-round">badge</span> Perfil & Marca do Grupo
+      </div>
+      <div class="nav-item" data-page="backup" onclick="navigateTo('backup')">
+        <span class="material-icons-round">cloud_download</span> Exportação & Backup
+      </div>
+      <div class="nav-item logout-item" onclick="logoutAdmin()">
+        <span class="material-icons-round">logout</span> Sair da Conta (Logout)
+      </div>
+    </nav>
+    
+    <div class="dev-sidebar-brand">
+      <div class="gb-mini-logo">GB&gt;</div>
+      <div class="dev-sidebar-info">
+        <h5>Gustavo Tavares Barros</h5>
+        <p>Analista de Sistemas</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="mobile-toggle" onclick="toggleSidebar()">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <h2 id="pageTitle">Planilha Geral 2026 (Estilo Excel)</h2>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-chip">
+          <span class="material-icons-round" style="font-size: 16px; color: var(--accent-green);">account_circle</span>
+          <span id="currentAdminDisplay">Admin</span>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="topbarLogoutBtn" onclick="logoutAdmin()" title="Sair do Sistema">
+          <span class="material-icons-round">logout</span> <span>Sair</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- PAGE: EXCEL SPREADSHEET -->
+      <div class="page active" id="page-excel">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">
+                <span class="material-icons-round" style="color: var(--accent-green);">table_chart</span>
+                Edição Unificada dos Atletas (Gols, Cartões e Mensalidades)
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="trialInfoSubtext">
+                ✨ <b>Período de Avaliação de 5 Dias:</b> Edite e teste todas as funções livremente!
+              </p>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addNewPlayerPrompt()">
+              <span class="material-icons-round">person_add</span> Adicionar Atleta
+            </button>
+          </div>
+
+          <div class="mobile-scroll-hint">👈 Deslize a tabela para ver os meses (FEV-DEZ) 👉</div>
+
+          <div class="excel-container">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">#</th>
+                  <th style="min-width: 160px; text-align: left;">Atleta</th>
+                  <th style="width: 110px;">Status</th>
+                  <th style="width: 65px; color: var(--accent-green);">⚽ Gols</th>
+                  <th style="width: 55px; color: #facc15;">🟨 Am.</th>
+                  <th style="width: 55px; color: var(--accent-red);">🟥 Ver.</th>
+                  <th style="width: 85px;">Mensalidade</th>
+                  <th style="width: 50px;">FEV</th>
+                  <th style="width: 50px;">MAR</th>
+                  <th style="width: 50px;">ABR</th>
+                  <th style="width: 50px;">MAI</th>
+                  <th style="width: 50px;">JUN</th>
+                  <th style="width: 50px;">JUL</th>
+                  <th style="width: 50px;">AGO</th>
+                  <th style="width: 50px;">SET</th>
+                  <th style="width: 50px;">OUT</th>
+                  <th style="width: 50px;">NOV</th>
+                  <th style="width: 50px;">DEZ</th>
+                </tr>
+              </thead>
+              <tbody id="excelTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: DASHBOARD -->
+      <div class="page" id="page-dashboard">
+        <div class="stats-grid" id="dashStats"></div>
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round">emoji_events</span>
+              Líderes da Artilharia
+            </div>
+          </div>
+          <div id="dashTopScorers" class="ranking-list"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: MÓDULO FINANCEIRO / CAIXA -->
+      <div class="page" id="page-financeiro">
+        <div class="stats-grid" id="caixaStats"></div>
+        
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-green);">add_circle</span>
+              Registrar Nova Despesa ou Receita Extra
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px;">
+            <input type="text" id="cashDesc" placeholder="Descrição (ex: Aluguel da quadra)" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
+            <input type="number" step="0.01" id="cashAmount" placeholder="Valor (R$)" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
+            <select id="cashType" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
+              <option value="saida">🔴 Despesa (Saída)</option>
+              <option value="entrada">🟢 Receita Extra (Entrada)</option>
+            </select>
+            <button type="button" class="btn btn-primary" onclick="addCashTransaction()">
+              <span class="material-icons-round">save</span> Salvar Lançamento
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round">receipt</span>
+              Histórico de Lançamentos do Caixa
+            </div>
+          </div>
+          <div class="excel-container">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="cashTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: PAGANTES VS DEVEDORES -->
+      <div class="page" id="page-devedores">
+        <div class="stats-grid" id="devedoresStats"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title" style="color: var(--accent-red);">
+                <span class="material-icons-round">error_outline</span>
+                Atletas em Atraso (Devedores)
+              </div>
+            </div>
+            <div id="devedoresList"></div>
+          </div>
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title" style="color: var(--accent-green);">
+                <span class="material-icons-round">check_circle_outline</span>
+                Atletas em Dia (Pagantes)
+              </div>
+            </div>
+            <div id="pagantesList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: GERADOR DE CARDS DE ARTILHARIA ANIMADOS -->
+      <div class="page" id="page-cards-artilharia">
+        <div class="glass-panel" style="text-align: center;">
+          <div class="panel-header" style="justify-content: center;">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-gold);">style</span>
+              Gerador de Cards Animados de Artilharia 📸
+            </div>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+            Selecione o período e publique no grupo do WhatsApp!
+          </p>
+          <div class="filter-tabs" style="justify-content: center; margin-bottom: 20px;">
+            <div class="filter-tab active" data-period="mes" onclick="setCardPeriod('mes', this)">🗓️ Mês</div>
+            <div class="filter-tab" data-period="semestre1" onclick="setCardPeriod('semestre1', this)">⚽ 1º Semestre</div>
+            <div class="filter-tab" data-period="semestre2" onclick="setCardPeriod('semestre2', this)">⚽ 2º Semestre</div>
+            <div class="filter-tab" data-period="ano" onclick="setCardPeriod('ano', this)">👑 Ano 2026</div>
+          </div>
+
+          <div class="card-export-wrapper" id="cardExportBox">
+            <div class="card-trophy-glow" id="cardTrophyEmoji">🏆</div>
+            <div style="font-size: 11px; color: #fbbf24; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;" id="cardPeriodTitle">ARTILHEIRO DO ANO 2026</div>
+            <div class="card-player-name" id="cardPlayerName">LOLOCO</div>
+            <div style="margin: 14px 0;">
+              <span class="card-goals-badge" id="cardPlayerGoals">⚽ 36 GOLS</span>
+            </div>
+            <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 10px;" id="cardGroupNameFooter">
+              RACHA DOS PEREBAS 2026 · GUSTAVO TAVARES BARROS
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+              <span class="material-icons-round">camera_alt</span> Imprimir / Salvar Card
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: PERFIL DO GESTOR & MARCA DO GRUPO -->
+      <div class="page" id="page-perfil">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-blue);">badge</span>
+              Perfil do Gestor & Branding do Grupo
+            </div>
+          </div>
+
+          <form onsubmit="saveAdminProfile(event)" action="javascript:void(0);" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+            <div>
+              <h4 style="font-family: 'Outfit'; font-size: 15px; margin-bottom: 12px; color: var(--accent-green);">Dados Pessoais do Gestor</h4>
+              
+              <div class="form-group">
+                <label>Nome Completo do Gestor</label>
+                <input type="text" id="profAdminName" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Telefone / WhatsApp</label>
+                <input type="text" id="profPhone" class="form-control" placeholder="(00) 99999-9999">
+              </div>
+              <div class="form-group">
+                <label>E-mail de Contato</label>
+                <input type="email" id="profEmail" class="form-control" placeholder="exemplo@email.com">
+              </div>
+              <div class="form-group">
+                <label>Chave Pix para Cobranças</label>
+                <input type="text" id="profPixKey" class="form-control" placeholder="CPF, Celular ou E-mail Pix">
+              </div>
+            </div>
+
+            <div>
+              <h4 style="font-family: 'Outfit'; font-size: 15px; margin-bottom: 12px; color: var(--accent-gold);">Marca e Identidade do Grupo</h4>
+              
+              <div class="form-group">
+                <label>Nome do Grupo de Futebol</label>
+                <input type="text" id="profGroupName" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Slogan ou Subtítulo</label>
+                <input type="text" id="profGroupSub" class="form-control" placeholder="Ex: Temporada 2026">
+              </div>
+              <div class="form-group">
+                <label>Escudo / Logo do Grupo (Emoji ou URL de Imagem)</label>
+                <input type="text" id="profLogoValue" class="form-control" placeholder="⚽ ou cole a URL da imagem da logo..." oninput="previewProfLogo(this.value)">
+                
+                <div class="logo-preset-picker">
+                  <div class="preset-badge-item" onclick="selectLogoPreset('⚽')">⚽</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('🏆')">🏆</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('🛡️')">🛡️</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('🦅')">🦅</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('⚡')">⚡</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('🔥')">🔥</div>
+                  <div class="preset-badge-item" onclick="selectLogoPreset('👑')">👑</div>
+                </div>
+              </div>
+
+              <div style="margin-top: 14px; text-align: center; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 12px; border: 1px solid var(--border-glass);">
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Pré-visualização do Escudo:</div>
+                <div id="profLogoPreviewBox" style="width: 50px; height: 50px; margin: 0 auto; background: linear-gradient(135deg, var(--accent-green), #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;">⚽</div>
+              </div>
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span class="material-icons-round">save</span> Salvar Alterações do Perfil e Marca
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- PAGE: BACKUP & EXPORTAÇÃO -->
+      <div class="page" id="page-backup">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-blue);">cloud_download</span>
+              Exportação de Planilhas & Backup
+            </div>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 16px;">
+            Baixe cópias em Excel ou arquivo JSON de segurança.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 16px; border-radius: 12px; text-align: center;">
+              <span class="material-icons-round" style="font-size: 36px; color: var(--accent-green); margin-bottom: 6px;">table_view</span>
+              <h4 style="font-family: 'Outfit'; font-size: 15px; margin-bottom: 4px;">Exportar Excel (CSV)</h4>
+              <button type="button" class="btn btn-primary btn-sm" onclick="exportToCSV()" style="width: 100%; margin-top: 10px;">
+                <span class="material-icons-round">download</span> Baixar CSV
+              </button>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 16px; border-radius: 12px; text-align: center;">
+              <span class="material-icons-round" style="font-size: 36px; color: var(--accent-blue); margin-bottom: 6px;">folder_zip</span>
+              <h4 style="font-family: 'Outfit'; font-size: 15px; margin-bottom: 4px;">Backup JSON</h4>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="exportJSONBackup()" style="width: 100%; margin-top: 10px;">
+                <span class="material-icons-round">save_alt</span> Baixar Backup
+              </button>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); padding: 16px; border-radius: 12px; text-align: center;">
+              <span class="material-icons-round" style="font-size: 36px; color: var(--accent-purple); margin-bottom: 6px;">restore</span>
+              <h4 style="font-family: 'Outfit'; font-size: 15px; margin-bottom: 4px;">Restaurar Backup</h4>
+              <input type="file" id="importBackupFile" accept=".json" style="display:none" onchange="importJSONBackup(this)">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('importBackupFile').click()" style="width: 100%; margin-top: 10px;">
+                <span class="material-icons-round">upload_file</span> Restaurar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: COBRANÇAS WHATSAPP -->
+      <div class="page" id="page-cobrancas">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-whatsapp);">send</span>
+              Cobranças Automáticas WhatsApp
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+            <select id="cobMonthSelect" onchange="renderCobrancas()" style="padding: 8px 12px; background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); border-radius: 6px; outline: none;"></select>
+          </div>
+          <div id="cobList"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: RANKING -->
+      <div class="page" id="page-ranking">
+        <div class="panel-header" style="margin-bottom: 14px;">
+          <div class="filter-tabs" id="rankFilters">
+            <div class="filter-tab active" data-filter="goals" onclick="setRankFilter('goals', this)">⚽ Artilharia (Gols)</div>
+            <div class="filter-tab" data-filter="cards" onclick="setRankFilter('cards', this)">🟨 Cartões</div>
+          </div>
+        </div>
+        <div class="glass-panel">
+          <div class="ranking-list" id="rankingList"></div>
+        </div>
+      </div>
+
+      <!-- PAGE: TROFÉUS -->
+      <div class="page" id="page-trofeus">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-gold);">emoji_events</span>
+              Hall da Fama 2026
+            </div>
+          </div>
+          <div class="trophy-grid" id="trophyGrid"></div>
+        </div>
+      </div>
+
+      <!-- Rodapé do Desenvolvedor -->
+      <div class="app-dev-footer">
+        <div class="app-dev-footer-info">
+          <div class="gb-mini-logo" style="width: 38px; height: 38px; font-size: 16px;">GB&gt;</div>
+          <div class="app-dev-footer-text">
+            <h6>Gustavo Tavares Barros</h6>
+            <p>Analista de Sistemas & Desenvolvedor de Sistemas e Soluções</p>
+          </div>
+        </div>
+        <div class="app-dev-footer-rights">
+          Soluções Inteligentes em Softwares para Pessoas Físicas e Jurídicas<br>
+          © 2026 <strong>Gustavo Tavares Barros</strong>. Todos os direitos reservados.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Licença -->
+  <div class="modal-overlay" id="licenseModal">
+    <div class="modal-box">
+      <span class="material-icons-round" style="font-size: 40px; color: var(--accent-green); margin-bottom: 10px;">verified_user</span>
+      <h3 style="font-family: 'Outfit'; font-size: 20px; margin-bottom: 6px;">Licença Definitiva</h3>
+      <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 16px;">
+        Digite a Chave de Licença fornecida pelo desenvolvedor para garantir acesso vitalício e ilimitado ao software.
+      </p>
+      <input type="password" id="licenseKeyInput" placeholder="Digite a chave..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(0,0,0,0.4); color: white; text-align: center; font-size: 15px; margin-bottom: 14px; outline: none;" autocapitalize="none" autocorrect="off">
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" class="btn btn-primary" onclick="verifyLicense()" style="width: 100%;">Ativar Licença</button>
+      </div>
+      <p style="font-size: 10.5px; color: var(--text-muted); margin-top: 12px;">Desenvolvedor: Gustavo Tavares Barros · (Chave: <strong>FUT2026</strong>)</p>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const TRIAL_DAYS = 5;
+
+    const DEFAULT_MEMBERS = [
+      { id: 'm1', name: 'Loloco', goals: 36, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm2', name: 'Wiliam', goals: 34, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm3', name: 'Erik', goals: 25, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 2:35, 3:35 } },
+      { id: 'm4', name: 'James2', goals: 23, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm5', name: 'Buiu', goals: 20, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35 } },
+      { id: 'm6', name: 'Emerson', goals: 18, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35, 7:35 } },
+      { id: 'm7', name: 'Marcos Cavalcanti', goals: 16, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm8', name: 'Emanoel Mané', goals: 15, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35 } },
+      { id: 'm9', name: 'Gustavo', goals: 15, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm10', name: 'Cicinho', goals: 15, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35 } },
+      { id: 'm11', name: 'Dam Alves', goals: 14, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35 } },
+      { id: 'm12', name: 'Marcos', goals: 13, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 2:35, 3:35, 4:35, 5:35, 6:35, 7:35 } },
+      { id: 'm13', name: 'Ronaldo Jr.', goals: 11, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm14', name: 'Gilmar', goals: 10, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:15 } },
+      { id: 'm15', name: 'Jackson', goals: 10, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm16', name: 'Júnior SAMU', goals: 7, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 3:35, 4:35, 5:35, 6:35, 7:35, 8:25 } },
+      { id: 'm17', name: 'Edvan goleiro', goals: 6, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: {} },
+      { id: 'm18', name: 'James', goals: 6, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35 } },
+      { id: 'm19', name: 'Rômulo', goals: 5, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm20', name: 'Jean', goals: 5, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm21', name: 'Junior Tenório', goals: 4, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm22', name: 'Erivaldo Tatu', goals: 3, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35 } },
+      { id: 'm23', name: 'Neurivan Jacaré', goals: 3, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35 } },
+      { id: 'm24', name: 'Igor Sorin', goals: 2, yellow: 0, red: 0, status: 'Lesao', fee: 35, payments: { 1:35, 2:35 } },
+      { id: 'm25', name: 'João Paulo', goals: 2, yellow: 0, red: 0, status: 'Saiu', fee: 35, payments: { 2:35, 3:35 } },
+      { id: 'm26', name: 'Alex', goals: 1, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: {} },
+      { id: 'm27', name: 'Bruno Duarte', goals: 1, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm28', name: 'Tiago Diogenes', goals: 1, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35 } },
+      { id: 'm29', name: 'Thiago goleiro', goals: 1, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: {} },
+      { id: 'm30', name: 'Horácio', goals: 0, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: { 1:35, 2:35, 3:35, 4:35, 5:35, 6:35, 7:5 } }
+    ];
+
+    const DEFAULT_CASH = [
+      { id: 'c1', date: '2026-02-01', desc: 'Aluguel do Campo (Fevereiro)', amount: 400, type: 'saida' },
+      { id: 'c2', date: '2026-03-01', desc: 'Aluguel do Campo (Março)', amount: 400, type: 'saida' },
+      { id: 'c3', date: '2026-03-15', desc: 'Compra de 2 Bolas Penalty Pro', amount: 350, type: 'saida' },
+      { id: 'c4', date: '2026-04-10', desc: 'Patrocínio Esportes local', amount: 500, type: 'entrada' }
+    ];
+
+    const DEFAULT_ADMINS = [
+      {
+        id: 'admin_default',
+        adminName: 'Gustavo Tavares Barros',
+        groupName: 'Racha dos Perebas 2026',
+        groupSub: 'Temporada 2026',
+        logo: '⚽',
+        phone: '(81) 99999-9999',
+        email: 'gustavo@exemplo.com',
+        pixKey: 'gustavo@pix.com',
+        username: 'admin',
+        password: '123'
+      }
+    ];
+
+    const MONTH_LABELS = ['FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    const MONTH_NAMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+    function loadAdmins() {
+      try {
+        const data = localStorage.getItem('racha_admins_list');
+        if (!data) {
+          localStorage.setItem('racha_admins_list', JSON.stringify(DEFAULT_ADMINS));
+          return DEFAULT_ADMINS;
+        }
+        return JSON.parse(data);
+      } catch (err) {
+        return DEFAULT_ADMINS;
+      }
+    }
+
+    function saveAdmins(list) {
+      try { localStorage.setItem('racha_admins_list', JSON.stringify(list)); } catch(e){}
+    }
+
+    let admins = loadAdmins();
+    let currentAdmin = null;
+    let members = [];
+    let cashList = [];
+    let isFullLicense = false;
+    let currentPage = 'excel';
+    let rankFilter = 'goals';
+    let cardPeriod = 'ano';
+
+    function getGroupStorageKey(suffix) {
+      const groupId = currentAdmin ? currentAdmin.id : 'admin_default';
+      return `racha_group_${groupId}_${suffix}`;
+    }
+
+    function loadGroupMembers() {
+      try {
+        const key = getGroupStorageKey('members');
+        const data = localStorage.getItem(key);
+        if (!data) {
+          const initialData = currentAdmin && currentAdmin.id === 'admin_default' ? DEFAULT_MEMBERS : [];
+          localStorage.setItem(key, JSON.stringify(initialData));
+          return initialData;
+        }
+        return JSON.parse(data);
+      } catch (err) {
+        return DEFAULT_MEMBERS;
+      }
+    }
+
+    function loadGroupCash() {
+      try {
+        const key = getGroupStorageKey('cash');
+        const data = localStorage.getItem(key);
+        if (!data) {
+          const initialData = currentAdmin && currentAdmin.id === 'admin_default' ? DEFAULT_CASH : [];
+          localStorage.setItem(key, JSON.stringify(initialData));
+          return initialData;
+        }
+        return JSON.parse(data);
+      } catch (err) {
+        return DEFAULT_CASH;
+      }
+    }
+
+    function saveMembers(data) { try { localStorage.setItem(getGroupStorageKey('members'), JSON.stringify(data)); } catch(e){} }
+    function saveCashData(data) { try { localStorage.setItem(getGroupStorageKey('cash'), JSON.stringify(data)); } catch(e){} }
+
+    function switchLoginTab(tab) {
+      if (tab === 'entrar') {
+        document.getElementById('formLogin').style.display = 'block';
+        document.getElementById('formCadastrar').style.display = 'none';
+        document.getElementById('tabEntrarBtn').classList.add('active');
+        document.getElementById('tabCadastrarBtn').classList.remove('active');
+      } else {
+        document.getElementById('formLogin').style.display = 'none';
+        document.getElementById('formCadastrar').style.display = 'block';
+        document.getElementById('tabEntrarBtn').classList.remove('active');
+        document.getElementById('tabCadastrarBtn').classList.add('active');
+      }
+    }
+
+    function handleLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const u = (document.getElementById('loginUsername').value || '').trim().toLowerCase();
+      const p = (document.getElementById('loginPassword').value || '').trim();
+
+      // Busca na lista de administradores cadastrados (insensível a maiúsculas/minúsculas no usuário)
+      let found = admins.find(a => (a.username || '').trim().toLowerCase() === u && (a.password || '').trim() === p);
+
+      // Fallback padrão se for o admin inicial
+      if (!found && (u === 'admin' && p === '123')) {
+        found = DEFAULT_ADMINS[0];
+      }
+
+      if (found) {
+        loginSuccess(found);
+      } else {
+        showToast('❌ Usuário ou senha incorretos!', 'error');
+      }
+      return false;
+    }
+
+    function handleRegister(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const adminName = document.getElementById('regAdminName').value.trim();
+      const groupName = document.getElementById('regGroupName').value.trim();
+      const username = document.getElementById('regUsername').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value.trim();
+
+      if (admins.some(a => (a.username || '').toLowerCase() === username)) {
+        showToast('❌ Nome de usuário já cadastrado!', 'error');
+        return false;
+      }
+
+      const newAdmin = {
+        id: 'admin_' + Date.now(),
+        adminName,
+        groupName,
+        groupSub: 'Temporada 2026',
+        logo: '⚽',
+        phone: '',
+        email: '',
+        pixKey: '',
+        username,
+        password
+      };
+
+      admins.push(newAdmin);
+      saveAdmins(admins);
+      showToast('🎉 Grupo e Administrador cadastrados com sucesso!', 'success');
+      loginSuccess(newAdmin);
+      return false;
+    }
+
+    function updateBrandingUI() {
+      if (!currentAdmin) return;
+      document.getElementById('currentAdminDisplay').textContent = `${currentAdmin.adminName}`;
+      document.getElementById('sidebarGroupName').textContent = currentAdmin.groupName;
+      document.getElementById('sidebarGroupSub').textContent = currentAdmin.groupSub || 'Temporada 2026';
+      document.getElementById('cardGroupNameFooter').textContent = `${currentAdmin.groupName.toUpperCase()} · GUSTAVO TAVARES BARROS`;
+
+      const logoBox = document.getElementById('sidebarLogoDisplay');
+      if (currentAdmin.logo && currentAdmin.logo.startsWith('http')) {
+        logoBox.innerHTML = `<img src="${currentAdmin.logo}" alt="Logo">`;
+      } else {
+        logoBox.innerHTML = currentAdmin.logo || '⚽';
+      }
+    }
+
+    function loginSuccess(adminObj) {
+      currentAdmin = adminObj;
+      try { localStorage.setItem('racha_current_admin_id', adminObj.id); } catch(e){}
+
+      document.getElementById('loginScreen').style.display = 'none';
+      updateBrandingUI();
+
+      members = loadGroupMembers();
+      cashList = loadGroupCash();
+      try { isFullLicense = localStorage.getItem(getGroupStorageKey('license_active')) === 'true'; } catch(e){ isFullLicense = false; }
+
+      renderExcelTable();
+      showToast(`Bem-vindo, ${adminObj.adminName}!`, 'success');
+    }
+
+    function logoutAdmin() {
+      currentAdmin = null;
+      try { localStorage.removeItem('racha_current_admin_id'); } catch(e){}
+      closeSidebar();
+      document.getElementById('loginScreen').style.display = 'flex';
+      showToast('Você saiu do sistema.', 'info');
+    }
+
+    function autoLoginCheck() {
+      try {
+        const savedAdminId = localStorage.getItem('racha_current_admin_id');
+        if (savedAdminId) {
+          const found = admins.find(a => a.id === savedAdminId);
+          if (found) {
+            loginSuccess(found);
+            return;
+          }
+        }
+      } catch(e){}
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('open');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+
+    function navigateTo(page) {
+      currentPage = page;
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+
+      const titles = {
+        excel: 'Planilha Geral (Excel)',
+        dashboard: 'Dashboard',
+        financeiro: 'Caixa do Racha',
+        devedores: 'Pagantes vs Devedores',
+        'cards-artilharia': 'Cards de Artilharia 📸',
+        perfil: 'Perfil & Marca do Grupo',
+        backup: 'Exportação & Backup',
+        cobrancas: 'Cobranças WhatsApp',
+        ranking: 'Ranking Gols/Cartões',
+        trofeus: 'Quadra de Troféus'
+      };
+      document.getElementById('pageTitle').textContent = titles[page] || page;
+
+      if (page === 'excel') renderExcelTable();
+      if (page === 'dashboard') renderDashboard();
+      if (page === 'financeiro') renderFinanceiro();
+      if (page === 'devedores') renderDevedores();
+      if (page === 'cards-artilharia') renderCardArtilharia();
+      if (page === 'perfil') renderAdminProfile();
+      if (page === 'cobrancas') renderCobrancas();
+      if (page === 'ranking') renderRanking();
+      if (page === 'trofeus') renderTrophies();
+
+      closeSidebar();
+    }
+
+    function renderAdminProfile() {
+      if (!currentAdmin) return;
+      document.getElementById('profAdminName').value = currentAdmin.adminName || '';
+      document.getElementById('profPhone').value = currentAdmin.phone || '';
+      document.getElementById('profEmail').value = currentAdmin.email || '';
+      document.getElementById('profPixKey').value = currentAdmin.pixKey || '';
+      document.getElementById('profGroupName').value = currentAdmin.groupName || '';
+      document.getElementById('profGroupSub').value = currentAdmin.groupSub || 'Temporada 2026';
+      document.getElementById('profLogoValue').value = currentAdmin.logo || '⚽';
+      previewProfLogo(currentAdmin.logo || '⚽');
+    }
+
+    function previewProfLogo(val) {
+      const box = document.getElementById('profLogoPreviewBox');
+      if (val && val.startsWith('http')) {
+        box.innerHTML = `<img src="${val}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">`;
+      } else {
+        box.innerHTML = val || '⚽';
+      }
+    }
+
+    function selectLogoPreset(emoji) {
+      document.getElementById('profLogoValue').value = emoji;
+      previewProfLogo(emoji);
+    }
+
+    function saveAdminProfile(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (!currentAdmin) return false;
+
+      currentAdmin.adminName = document.getElementById('profAdminName').value.trim();
+      currentAdmin.phone = document.getElementById('profPhone').value.trim();
+      currentAdmin.email = document.getElementById('profEmail').value.trim();
+      currentAdmin.pixKey = document.getElementById('profPixKey').value.trim();
+      currentAdmin.groupName = document.getElementById('profGroupName').value.trim();
+      currentAdmin.groupSub = document.getElementById('profGroupSub').value.trim();
+      currentAdmin.logo = document.getElementById('profLogoValue').value.trim() || '⚽';
+
+      const idx = admins.findIndex(a => a.id === currentAdmin.id);
+      if (idx !== -1) {
+        admins[idx] = currentAdmin;
+        saveAdmins(admins);
+      }
+
+      updateBrandingUI();
+      showToast('Perfil e Marca salvos com sucesso!', 'success');
+      return false;
+    }
+
+    function getTrialStatus() {
+      if (isFullLicense) return { expired: false, daysLeft: 999, isFull: true };
+      const key = getGroupStorageKey('trial_start');
+      let startDateStr = null;
+      try { startDateStr = localStorage.getItem(key); } catch(e){}
+
+      if (!startDateStr) {
+        startDateStr = new Date().toISOString();
+        try { localStorage.setItem(key, startDateStr); } catch(e){}
+      }
+      const startDate = new Date(startDateStr);
+      const now = new Date();
+      const diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      const daysLeft = TRIAL_DAYS - diffDays;
+      return { expired: daysLeft <= 0, daysLeft: daysLeft > 0 ? daysLeft : 0, isFull: false };
+    }
+
+    function updateTrialUI() {
+      const status = getTrialStatus();
+      const banner = document.getElementById('trialBanner');
+      const bannerText = document.getElementById('trialBannerText');
+      const subtext = document.getElementById('trialInfoSubtext');
+
+      if (status.isFull) {
+        banner.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+        bannerText.innerHTML = '✅ <strong>LICENÇA DEFINITIVA:</strong> Registrado para ' + (currentAdmin ? currentAdmin.groupName : 'Grupo') + '.';
+        subtext.innerHTML = '✨ <b>Versão Completa:</b> Alterações salvas permanentemente.';
+      } else if (status.expired) {
+        banner.classList.add('expired');
+        bannerText.innerHTML = '🔴 <strong>AVALIAÇÃO EXPIRADA:</strong> Contate Gustavo Tavares Barros.';
+        subtext.innerHTML = '⚠️ <b>Período Expirado:</b> Insira a Licença para editar.';
+      } else {
+        banner.classList.remove('expired');
+        bannerText.innerHTML = `⌛ <strong>TESTE GRATUITO (5 DIAS):</strong> Restam <b>${status.daysLeft} dia(s)</b>!`;
+        subtext.innerHTML = `✨ <b>Degustação Ativa (${status.daysLeft} dias restantes):</b> Desenvolvido por Gustavo Tavares Barros.`;
+      }
+    }
+
+    function checkCanEdit() {
+      const status = getTrialStatus();
+      if (status.isFull) return true;
+      if (status.expired) {
+        showToast('🔴 Período expirado! Adquira a Licença com Gustavo Tavares Barros.', 'error');
+        openLicenseModal();
+        return false;
+      }
+      return true;
+    }
+
+    function showToast(msg, type = 'info') {
+      const c = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<span class="material-icons-round">${type === 'success' ? 'check_circle' : 'warning'}</span> ${msg}`;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    // EXCEL TABLE
+    function renderExcelTable() {
+      const tbody = document.getElementById('excelTableBody');
+      const canEdit = !getTrialStatus().expired || isFullLicense;
+
+      tbody.innerHTML = members.map((m, idx) => {
+        const monthCellsHtml = Array.from({length: 11}, (_, i) => {
+          const mIndex = i + 1;
+          const val = m.payments ? m.payments[mIndex] : undefined;
+          let btnClass = 'pendente';
+          let displayVal = '—';
+          if (val !== undefined && val > 0) { btnClass = 'pago'; displayVal = `R$ ${val}`; }
+          else if (m.status === 'Saiu') { btnClass = 'bloqueado'; displayVal = 'SAIU'; }
+          else if (m.status === 'Lesao') { btnClass = 'bloqueado'; displayVal = 'LESÃO'; }
+
+          return `<td><button type="button" class="month-status-btn ${btnClass}" onclick="togglePayment('${m.id}', ${mIndex})">${displayVal}</button></td>`;
+        }).join('');
+
+        return `<tr>
+          <td style="color: var(--text-muted); font-size: 11px;">${idx + 1}</td>
+          <td><input type="text" class="excel-input text-left bold" value="${m.name}" ${canEdit ? '' : 'readonly'} onchange="updateField('${m.id}', 'name', this.value)"></td>
+          <td>
+            <select class="status-select ${m.status ? m.status.toLowerCase() : 'ativo'}" ${canEdit ? '' : 'disabled'} onchange="updateField('${m.id}', 'status', this.value)">
+              <option value="Ativo" ${m.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
+              <option value="Lesao" ${m.status === 'Lesao' ? 'selected' : ''}>Afastado (Lesão)</option>
+              <option value="Saiu" ${m.status === 'Saiu' ? 'selected' : ''}>Saiu</option>
+            </select>
+          </td>
+          <td><input type="number" min="0" class="excel-input bold" style="color: var(--accent-green);" value="${m.goals || 0}" ${canEdit ? '' : 'readonly'} onchange="updateField('${m.id}', 'goals', parseInt(this.value)||0)"></td>
+          <td><input type="number" min="0" class="excel-input" style="color: #facc15;" value="${m.yellow || 0}" ${canEdit ? '' : 'readonly'} onchange="updateField('${m.id}', 'yellow', parseInt(this.value)||0)"></td>
+          <td><input type="number" min="0" class="excel-input" style="color: var(--accent-red);" value="${m.red || 0}" ${canEdit ? '' : 'readonly'} onchange="updateField('${m.id}', 'red', parseInt(this.value)||0)"></td>
+          <td><input type="number" min="0" class="excel-input" value="${m.fee || 35}" ${canEdit ? '' : 'readonly'} onchange="updateField('${m.id}', 'fee', parseFloat(this.value)||0)"></td>
+          ${monthCellsHtml}
+        </tr>`;
+      }).join('');
+
+      updateTrialUI();
+    }
+
+    function updateField(id, field, value) {
+      if (!checkCanEdit()) { renderExcelTable(); return; }
+      const idx = members.findIndex(m => m.id === id);
+      if (idx !== -1) {
+        members[idx][field] = value;
+        saveMembers(members);
+        showToast(`Salvo: ${members[idx].name}!`, 'success');
+      }
+    }
+
+    function togglePayment(id, mIndex) {
+      if (!checkCanEdit()) return;
+      const idx = members.findIndex(m => m.id === id);
+      if (idx !== -1) {
+        if (!members[idx].payments) members[idx].payments = {};
+        if (members[idx].payments[mIndex]) {
+          delete members[idx].payments[mIndex];
+        } else {
+          members[idx].payments[mIndex] = members[idx].fee || 35;
+        }
+        saveMembers(members);
+        renderExcelTable();
+        showToast(`Pagamento de ${members[idx].name} alterado!`, 'success');
+      }
+    }
+
+    function addNewPlayerPrompt() {
+      if (!checkCanEdit()) return;
+      const name = prompt("Nome do atleta:");
+      if (!name || !name.trim()) return;
+
+      members.push({
+        id: 'm_' + Date.now(),
+        name: name.trim(),
+        goals: 0, yellow: 0, red: 0, status: 'Ativo', fee: 35, payments: {}
+      });
+      saveMembers(members);
+      renderExcelTable();
+      showToast(`${name} adicionado!`, 'success');
+    }
+
+    // FINANCEIRO
+    function renderFinanceiro() {
+      let totalMensalidades = 0;
+      members.forEach(m => {
+        if (m.payments) {
+          Object.values(m.payments).forEach(val => { totalMensalidades += (parseFloat(val) || 0); });
+        }
+      });
+
+      let totalOutrasEntradas = 0;
+      let totalSaidas = 0;
+
+      cashList.forEach(c => {
+        if (c.type === 'entrada') totalOutrasEntradas += c.amount;
+        else totalSaidas += c.amount;
+      });
+
+      const totalEntradas = totalMensalidades + totalOutrasEntradas;
+      const saldoFinal = totalEntradas - totalSaidas;
+
+      document.getElementById('caixaStats').innerHTML = `
+        <div class="stat-card green">
+          <div class="stat-card-label">Mensalidades Arrecadadas</div>
+          <div class="stat-card-value">R$ ${totalMensalidades.toFixed(2)}</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-label">Receitas Extras</div>
+          <div class="stat-card-value">R$ ${totalOutrasEntradas.toFixed(2)}</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-label">Despesas (Saídas)</div>
+          <div class="stat-card-value">R$ ${totalSaidas.toFixed(2)}</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-card-label">Saldo em Caixa</div>
+          <div class="stat-card-value" style="color: ${saldoFinal >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">R$ ${saldoFinal.toFixed(2)}</div>
+        </div>
+      `;
+
+      const tbody = document.getElementById('cashTableBody');
+      tbody.innerHTML = cashList.map(c => `
+        <tr>
+          <td>${c.date}</td>
+          <td style="text-align: left; font-weight: 600;">${c.desc}</td>
+          <td><span class="status-select ${c.type === 'entrada' ? 'ativo' : 'saiu'}">${c.type.toUpperCase()}</span></td>
+          <td style="font-weight: 700; color: ${c.type === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)'}">
+            ${c.type === 'entrada' ? '+' : '-'} R$ ${c.amount.toFixed(2)}
+          </td>
+          <td>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="deleteCash('${c.id}')" style="color: var(--accent-red);">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function addCashTransaction() {
+      if (!checkCanEdit()) return;
+      const desc = document.getElementById('cashDesc').value.trim();
+      const amount = parseFloat(document.getElementById('cashAmount').value) || 0;
+      const type = document.getElementById('cashType').value;
+
+      if (!desc || amount <= 0) {
+        showToast('Preencha descrição e valor válido!', 'error');
+        return;
+      }
+
+      cashList.push({
+        id: 'c_' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        desc, amount, type
+      });
+      saveCashData(cashList);
+      document.getElementById('cashDesc').value = '';
+      document.getElementById('cashAmount').value = '';
+      renderFinanceiro();
+      showToast('Lançamento salvo!', 'success');
+    }
+
+    function deleteCash(id) {
+      if (!checkCanEdit()) return;
+      cashList = cashList.filter(c => c.id !== id);
+      saveCashData(cashList);
+      renderFinanceiro();
+      showToast('Lançamento removido!');
+    }
+
+    // DEVEDORES
+    function renderDevedores() {
+      const activeMembers = members.filter(m => m.status === 'Ativo');
+      const curMonthIdx = 7;
+      const pixInfo = currentAdmin && currentAdmin.pixKey ? `\n\n🔑 Chave Pix: *${currentAdmin.pixKey}*` : '';
+
+      let totalPendenteGlobal = 0;
+      let totalDevedoresCount = 0;
+      let totalPagantesCount = 0;
+
+      const devedoresHtml = [];
+      const pagantesHtml = [];
+
+      activeMembers.forEach(m => {
+        let devedorMeses = [];
+        let devVal = 0;
+
+        for (let i = 1; i <= curMonthIdx; i++) {
+          if (!m.payments || !m.payments[i]) {
+            devedorMeses.push(MONTH_LABELS[i-1]);
+            devVal += (m.fee || 35);
+          }
+        }
+
+        if (devedorMeses.length > 0) {
+          totalDevedoresCount++;
+          totalPendenteGlobal += devVal;
+          const msg = `⚽ *${currentAdmin ? currentAdmin.groupName : 'Futebol'}*\nOlá *${m.name}*! Notamos pendência nos meses: *${devedorMeses.join(', ')}* (Total: R$ ${devVal.toFixed(2)}).${pixInfo}\nPor favor, regularize via Pix!🏼`;
+          const phone = (m.phone || '').replace(/\D/g, '');
+          const link = `https://wa.me/55${phone}?text=${encodeURIComponent(msg)}`;
+
+          devedoresHtml.push(`
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-glass); flex-wrap: wrap; gap: 8px;">
+              <div>
+                <strong style="font-size: 13.5px;">${m.name}</strong>
+                <div style="font-size: 11px; color: var(--accent-red);">Meses: ${devedorMeses.join(', ')}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-weight: 800; color: var(--accent-red); font-size: 14px;">R$ ${devVal.toFixed(2)}</div>
+                <a href="${link}" target="_blank" class="btn btn-whatsapp btn-sm" style="margin-top: 4px;">Cobrar WhatsApp</a>
+              </div>
+            </div>
+          `);
+        } else {
+          totalPagantesCount++;
+          pagantesHtml.push(`
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-glass);">
+              <div>
+                <strong style="font-size: 13.5px;">${m.name}</strong>
+                <div style="font-size: 11px; color: var(--accent-green);">100% em dia até ${MONTH_LABELS[curMonthIdx-1]}</div>
+              </div>
+              <span class="status-select ativo">OK</span>
+            </div>
+          `);
+        }
+      });
+
+      document.getElementById('devedoresStats').innerHTML = `
+        <div class="stat-card green">
+          <div class="stat-card-label">Atletas em Dia (Pagantes)</div>
+          <div class="stat-card-value">✅ ${totalPagantesCount}</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-label">Atletas em Atraso (Devedores)</div>
+          <div class="stat-card-value">⚠️ ${totalDevedoresCount}</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-card-label">Total a Receber</div>
+          <div class="stat-card-value" style="color: var(--accent-red);">R$ ${totalPendenteGlobal.toFixed(2)}</div>
+        </div>
+      `;
+
+      document.getElementById('devedoresList').innerHTML = devedoresHtml.join('') || '<div style="padding: 16px; text-align: center; color: var(--accent-green);">Nenhum atleta devendo! 🎉</div>';
+      document.getElementById('pagantesList').innerHTML = pagantesHtml.join('');
+    }
+
+    // CARDS ARTILHARIA
+    function setCardPeriod(period, el) {
+      cardPeriod = period;
+      document.querySelectorAll('#page-cards-artilharia .filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderCardArtilharia();
+    }
+
+    function renderCardArtilharia() {
+      const sorted = [...members].sort((a, b) => (b.goals || 0) - (a.goals || 0));
+      const topPlayer = sorted[0];
+
+      const periodTitles = {
+        mes: 'ARTILHEIRO DO MÊS',
+        semestre1: 'ARTILHEIRO DO 1º SEMESTRE',
+        semestre2: 'ARTILHEIRO DO 2º SEMESTRE',
+        ano: 'KING OF GOALS 2026'
+      };
+
+      document.getElementById('cardPeriodTitle').textContent = periodTitles[cardPeriod] || 'ARTILHEIRO DO ANO';
+      document.getElementById('cardPlayerName').textContent = topPlayer ? topPlayer.name.toUpperCase() : 'NENHUM';
+      document.getElementById('cardPlayerGoals').textContent = `⚽ ${topPlayer ? topPlayer.goals : 0} GOLS`;
+    }
+
+    // BACKUP & EXPORT
+    function exportToCSV() {
+      let csv = 'Nome;Status;Gols;Amarelos;Vermelhos;Mensalidade;FEV;MAR;ABR;MAI;JUN;JUL;AGO;SET;OUT;NOV;DEZ\n';
+      members.forEach(m => {
+        let line = `"${m.name}";"${m.status}";${m.goals||0};${m.yellow||0};${m.red||0};${m.fee||35}`;
+        for (let i = 1; i <= 11; i++) {
+          line += `;${m.payments && m.payments[i] ? m.payments[i] : 0}`;
+        }
+        csv += line + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Planilha_${currentAdmin ? currentAdmin.groupName.replace(/\s+/g,'_') : 'Futebol'}.csv`;
+      a.click();
+      showToast('Planilha CSV gerada!', 'success');
+    }
+
+    function exportJSONBackup() {
+      const backupObj = { members, cashList, admin: currentAdmin, exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Backup_${currentAdmin ? currentAdmin.groupName.replace(/\s+/g,'_') : 'Futebol'}.json`;
+      a.click();
+      showToast('Backup JSON gerado!', 'success');
+    }
+
+    function importJSONBackup(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.members) { members = parsed.members; saveMembers(members); }
+          if (parsed.cashList) { cashList = parsed.cashList; saveCashData(cashList); }
+          renderExcelTable();
+          showToast('Backup restaurado!', 'success');
+        } catch {
+          showToast('Erro ao ler backup!', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function renderDashboard() {
+      const totalGoals = members.reduce((sum, m) => sum + (m.goals || 0), 0);
+      const totalActive = members.filter(m => m.status === 'Ativo').length;
+      const totalLesao = members.filter(m => m.status === 'Lesao').length;
+      const totalSaiu = members.filter(m => m.status === 'Saiu').length;
+
+      document.getElementById('dashStats').innerHTML = `
+        <div class="stat-card green">
+          <div class="stat-card-label">Total de Gols</div>
+          <div class="stat-card-value">⚽ ${totalGoals}</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-label">Atletas Ativos</div>
+          <div class="stat-card-value">🏃 ${totalActive}</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-card-label">Afastados (Lesão)</div>
+          <div class="stat-card-value">🏥 ${totalLesao}</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-label">Sairam do Grupo</div>
+          <div class="stat-card-value">🚪 ${totalSaiu}</div>
+        </div>
+      `;
+
+      const sorted = [...members].sort((a, b) => (b.goals || 0) - (a.goals || 0)).slice(0, 5);
+      const topGoals = sorted.length > 0 ? (sorted[0].goals || 1) : 1;
+
+      document.getElementById('dashTopScorers').innerHTML = sorted.map((m, i) => `
+        <div class="ranking-item ${i === 0 ? 'top-1' : i === 1 ? 'top-2' : i === 2 ? 'top-3' : ''}">
+          <div class="ranking-position">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 14px;">${m.name}</div>
+            <div style="font-size: 10px; color: var(--text-muted);">${m.status}</div>
+          </div>
+          <div style="font-family: 'Outfit'; font-weight: 800; font-size: 18px; color: var(--accent-green);">${m.goals || 0} Gols</div>
+          <div class="ranking-bar-container">
+            <div class="ranking-bar" style="width: ${((m.goals || 0) / topGoals) * 100}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCobrancas() {
+      const select = document.getElementById('cobMonthSelect');
+      if (select.children.length === 0) {
+        select.innerHTML = MONTH_LABELS.map((m, i) => `<option value="${i+1}" ${i+1===7 ? 'selected' : ''}>${MONTH_NAMES[i+1]} (${m})</option>`).join('');
+      }
+
+      const mIdx = parseInt(select.value) || 7;
+      const debtors = members.filter(m => m.status === 'Ativo' && (!m.payments || !m.payments[mIdx]));
+
+      const container = document.getElementById('cobList');
+      if (debtors.length === 0) {
+        container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--accent-green);">✅ Todos em dia com este mês!</div>';
+        return;
+      }
+
+      const pixInfo = currentAdmin && currentAdmin.pixKey ? `\n🔑 Chave Pix: *${currentAdmin.pixKey}*` : '';
+
+      container.innerHTML = debtors.map(m => {
+        const msg = `⚽ *${currentAdmin ? currentAdmin.groupName : 'Futebol'}*\n\nOlá *${m.name}*! Sua mensalidade referente a *${MONTH_LABELS[mIdx-1]}/2026* no valor de *R$ ${m.fee || 35},00* está pendente.${pixInfo}\n\nPor favor, envie o comprovante Pix assim que possível! Obrigado! 🙏`;
+        const phone = (m.phone || '').replace(/\D/g, '');
+        const link = `https://wa.me/55${phone}?text=${encodeURIComponent(msg)}`;
+
+        return `<div class="glass-panel" style="margin-bottom: 10px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <strong style="font-size: 14px;">${m.name}</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Mensalidade: R$ ${m.fee || 35},00</div>
+            </div>
+            <a href="${link}" target="_blank" class="btn btn-whatsapp btn-sm">Enviar WhatsApp</a>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function setRankFilter(f, el) {
+      rankFilter = f;
+      document.querySelectorAll('#rankFilters .filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderRanking();
+    }
+
+    function renderRanking() {
+      const container = document.getElementById('rankingList');
+      let sorted = [...members];
+
+      if (rankFilter === 'goals') {
+        sorted.sort((a, b) => (b.goals || 0) - (a.goals || 0));
+      } else {
+        sorted.sort((a, b) => ((b.yellow || 0) + (b.red || 0)) - ((a.yellow || 0) + (a.red || 0)));
+      }
+
+      const topVal = sorted.length > 0
+        ? (rankFilter === 'goals' ? (sorted[0].goals || 1) : (((sorted[0].yellow || 0) + (sorted[0].red || 0)) || 1))
+        : 1;
+
+      container.innerHTML = sorted.map((m, i) => {
+        const val = rankFilter === 'goals' ? m.goals || 0 : (m.yellow || 0) + (m.red || 0);
+        return `<div class="ranking-item ${i === 0 ? 'top-1' : i === 1 ? 'top-2' : i === 2 ? 'top-3' : ''}">
+          <div class="ranking-position">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.name}</div>
+            <div style="font-size: 10px; color: var(--text-muted);">${m.status}</div>
+          </div>
+          <div style="font-family: 'Outfit'; font-weight: 800; font-size: 16px; color: ${rankFilter === 'goals' ? 'var(--accent-green)' : '#facc15'}; flex-shrink: 0;">
+            ${rankFilter === 'goals' ? `⚽ ${val}` : `🟨 ${m.yellow||0} | 🟥 ${m.red||0}`}
+          </div>
+          <div class="ranking-bar-container">
+            <div class="ranking-bar" style="width: ${(val / topVal) * 100}%"></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderTrophies() {
+      const sorted = [...members].sort((a, b) => (b.goals || 0) - (a.goals || 0));
+      const top1 = sorted[0];
+      const top2 = sorted[1];
+      const top3 = sorted[2];
+
+      document.getElementById('trophyGrid').innerHTML = `
+        <div class="trophy-card">
+          <span style="font-size: 50px;">🏆</span>
+          <h3 style="color: var(--accent-gold); font-family: 'Outfit'; font-size: 18px;">Artilheiro do Ano</h3>
+          <div style="font-size: 20px; font-weight: 800; margin: 6px 0;">${top1 ? top1.name : '—'}</div>
+          <div style="font-weight: 700; color: var(--accent-green); font-size: 15px;">⚽ ${top1 ? top1.goals : 0} Gols</div>
+        </div>
+        <div class="trophy-card" style="opacity: 0.9;">
+          <span style="font-size: 50px;">🥈</span>
+          <h3 style="color: #cbd5e1; font-family: 'Outfit'; font-size: 18px;">Vice-Artilheiro</h3>
+          <div style="font-size: 18px; font-weight: 800; margin: 6px 0;">${top2 ? top2.name : '—'}</div>
+          <div style="font-weight: 700; color: var(--accent-green); font-size: 15px;">⚽ ${top2 ? top2.goals : 0} Gols</div>
+        </div>
+        <div class="trophy-card" style="opacity: 0.8;">
+          <span style="font-size: 50px;">🥉</span>
+          <h3 style="color: #d97706; font-family: 'Outfit'; font-size: 18px;">3º Lugar na Artilharia</h3>
+          <div style="font-size: 17px; font-weight: 800; margin: 6px 0;">${top3 ? top3.name : '—'}</div>
+          <div style="font-weight: 700; color: var(--accent-green); font-size: 15px;">⚽ ${top3 ? top3.goals : 0} Gols</div>
+        </div>
+      `;
+    }
+
+    function openLicenseModal() { document.getElementById('licenseModal').classList.add('active'); }
+
+    function verifyLicense() {
+      const key = document.getElementById('licenseKeyInput').value.trim();
+      if (key.toUpperCase() === 'FUT2026' || key.toUpperCase() === 'PRO2026') {
+        isFullLicense = true;
+        try { localStorage.setItem(getGroupStorageKey('license_active'), 'true'); } catch(e){}
+        document.getElementById('licenseModal').classList.remove('active');
+        showToast('🎉 Licença Definitiva ativada para este grupo!', 'success');
+        renderExcelTable();
+      } else {
+        showToast('❌ Chave de Licença incorreta!', 'error');
+      }
+    }
+
+    autoLoginCheck();
+  </script>
+</body>
+</html>
