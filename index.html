@@ -331,6 +331,63 @@
     .toast.success { background: rgba(16, 185, 129, 0.95); color: white; }
     .toast.error { background: rgba(239, 68, 68, 0.95); color: white; }
 
+    /* FILTER TABS */
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-tab {
+      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;
+      background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .filter-tab:hover { border-color: var(--accent-green); color: var(--accent-green); }
+    .filter-tab.active { background: rgba(16,185,129,0.15); border-color: var(--accent-green); color: var(--accent-green); }
+
+    /* CHART BARS */
+    .chart-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .chart-row { display: flex; align-items: center; gap: 10px; }
+    .chart-label { width: 140px; font-size: 12px; color: var(--text-secondary); flex-shrink: 0; text-align: right; }
+    .chart-bar-bg { flex: 1; height: 22px; background: rgba(255,255,255,0.04); border-radius: 6px; overflow: hidden; }
+    .chart-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: white; transition: width 0.5s ease; }
+    .chart-val { width: 70px; font-size: 12px; font-weight: 700; text-align: right; flex-shrink: 0; }
+
+    /* PRESTAÇÃO DE CONTAS */
+    .prestacao-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .prestacao-table th { background: rgba(17,24,39,0.98); color: var(--text-secondary); font-size: 10.5px; font-weight: 700; text-transform: uppercase; padding: 10px 12px; text-align: left; border: 1px solid var(--border-glass); }
+    .prestacao-table td { border: 1px solid rgba(255,255,255,0.05); padding: 9px 12px; }
+    .prestacao-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+    .prestacao-table tfoot td { background: rgba(17,24,39,0.98); font-weight: 700; border: 1px solid var(--border-glass); }
+    .prestacao-edit { background: transparent; border: 1px solid transparent; color: var(--text-primary); padding: 4px 6px; border-radius: 4px; width: 100%; outline: none; font-size: 13px; }
+    .prestacao-edit:focus { border-color: var(--accent-green); background: rgba(16,185,129,0.08); }
+
+    /* BADGE CATEGORIA */
+    .cat-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10.5px; font-weight: 700; }
+    .cat-aluguel { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .cat-bola { background: rgba(16,185,129,0.2); color: #34d399; }
+    .cat-uniforme { background: rgba(139,92,246,0.2); color: #a78bfa; }
+    .cat-arbitragem { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .cat-premiacao { background: rgba(245,158,11,0.3); color: #f59e0b; }
+    .cat-patrocinio { background: rgba(16,185,129,0.3); color: #10b981; }
+    .cat-mensalidade { background: rgba(16,185,129,0.15); color: #34d399; }
+    .cat-outro { background: rgba(148,163,184,0.15); color: #94a3b8; }
+
+    /* PRINT STYLES */
+    @media print {
+      body { background: white !important; color: black !important; }
+      .sidebar, .topbar, .trial-banner, .sidebar-overlay, .app-dev-footer,
+      .no-print { display: none !important; }
+      .main-content { margin-left: 0 !important; }
+      .page-content { padding: 0 !important; }
+      .glass-panel { background: white !important; border: 1px solid #ddd !important; border-radius: 8px !important; break-inside: avoid; }
+      .prestacao-table th, .prestacao-table tfoot td { background: #f1f5f9 !important; color: #334155 !important; border-color: #cbd5e1 !important; }
+      .prestacao-table td { color: #1e293b !important; border-color: #e2e8f0 !important; }
+      .stat-card { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; }
+      .stat-card-value { color: #1e293b !important; }
+      .stat-card-label { color: #64748b !important; }
+      .print-only { display: block !important; }
+      .prestacao-edit { color: #1e293b !important; }
+      @page { margin: 15mm; }
+    }
+    .print-only { display: none; }
+
     /* REGRAS DE ADAPTAÇÃO MOBILE */
     @media (max-width: 768px) {
       .mobile-toggle { display: flex; }
@@ -347,6 +404,7 @@
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .app-dev-footer { flex-direction: column; text-align: center; }
       .app-dev-footer-rights { text-align: center; }
+      .chart-label { width: 90px; font-size: 11px; }
     }
 
     @media (max-width: 480px) {
@@ -459,6 +517,14 @@
       </div>
       <div class="nav-item" data-page="cobrancas" onclick="navigateTo('cobrancas')">
         <span class="material-icons-round">send</span> Cobranças WhatsApp
+      </div>
+
+      <div class="nav-label">📋 Relatórios</div>
+      <div class="nav-item" data-page="balanco" onclick="navigateTo('balanco')">
+        <span class="material-icons-round">bar_chart</span> Balanço Financeiro
+      </div>
+      <div class="nav-item" data-page="prestacao" onclick="navigateTo('prestacao')">
+        <span class="material-icons-round">assignment</span> Prestação de Contas
       </div>
 
       <div class="nav-label">Competição & Imagens</div>
@@ -590,12 +656,22 @@
               Registrar Nova Despesa ou Receita Extra
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 12px;">
             <input type="text" id="cashDesc" placeholder="Descrição (ex: Aluguel da quadra)" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
             <input type="number" step="0.01" id="cashAmount" placeholder="Valor (R$)" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
+            <input type="date" id="cashDate" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
             <select id="cashType" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
               <option value="saida">🔴 Despesa (Saída)</option>
               <option value="entrada">🟢 Receita Extra (Entrada)</option>
+            </select>
+            <select id="cashCategoria" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: white; border-radius: 6px; outline: none;">
+              <option value="aluguel">🏟️ Aluguel</option>
+              <option value="bola">⚽ Bola</option>
+              <option value="uniforme">👕 Uniforme</option>
+              <option value="arbitragem">🟨 Arbitragem</option>
+              <option value="premiacao">🏆 Premiação</option>
+              <option value="patrocinio">💼 Patrocínio</option>
+              <option value="outro">📎 Outro</option>
             </select>
             <button type="button" class="btn btn-primary" onclick="addCashTransaction()">
               <span class="material-icons-round">save</span> Salvar Lançamento
@@ -847,6 +923,240 @@
           <div class="trophy-grid" id="trophyGrid"></div>
         </div>
       </div>
+
+      <!-- PAGE: BALANÇO FINANCEIRO -->
+      <div class="page" id="page-balanco">
+
+        <!-- Cabeçalho de impressão -->
+        <div class="print-only" style="text-align:center; margin-bottom: 20px;">
+          <h1 style="font-size: 22px; margin-bottom: 4px;">⚽ Balanço Financeiro</h1>
+          <div id="balancoPrintHeader" style="font-size: 13px; color: #64748b;"></div>
+        </div>
+
+        <div class="stats-grid" id="balancoStats"></div>
+
+        <!-- Filtro por período -->
+        <div class="glass-panel no-print" style="padding: 14px 18px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">🗓️ Filtrar por mês:</span>
+            <select id="balancoMonthFilter" onchange="renderBalanco()" style="padding: 7px 12px; background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); border-radius: 8px; outline: none; font-size: 13px;">
+              <option value="all">Todos os meses</option>
+            </select>
+            <div style="margin-left: auto; display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+                <span class="material-icons-round">print</span> Imprimir / PDF
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="exportBalancoPDF()">
+                <span class="material-icons-round">download</span> Exportar CSV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico de Balanço por Mês -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round" style="color: var(--accent-blue);">bar_chart</span>
+              Arrecadação por Mês (Mensalidades)
+            </div>
+          </div>
+          <div class="chart-bar-wrap" id="balancoChart"></div>
+        </div>
+
+        <!-- Composição das Receitas e Despesas -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title" style="color: var(--accent-green);">
+                <span class="material-icons-round">trending_up</span>
+                Composição das Receitas
+              </div>
+            </div>
+            <div id="balancoReceitas"></div>
+          </div>
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title" style="color: var(--accent-red);">
+                <span class="material-icons-round">trending_down</span>
+                Composição das Despesas
+              </div>
+            </div>
+            <div id="balancoDespesas"></div>
+          </div>
+        </div>
+
+        <!-- Histórico Completo -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round">history</span>
+              Histórico Completo de Lançamentos
+            </div>
+          </div>
+          <div class="excel-container">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="text-align:left;">Data</th>
+                  <th style="text-align:left;">Descrição</th>
+                  <th>Categoria</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Saldo Acum.</th>
+                </tr>
+              </thead>
+              <tbody id="balancoHistorico"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: PRESTAÇÃO DE CONTAS -->
+      <div class="page" id="page-prestacao">
+
+        <div class="print-only" style="text-align:center; margin-bottom: 20px;">
+          <h1 style="font-size: 22px; margin-bottom: 4px;">📋 Prestação de Contas</h1>
+          <div id="prestacaoPrintHeader" style="font-size: 13px; color: #64748b;"></div>
+        </div>
+
+        <!-- Controles -->
+        <div class="glass-panel no-print" style="padding: 14px 18px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">📅 Período:</span>
+            <select id="prestacaoMesInicio" onchange="renderPrestacao()" style="padding: 7px 12px; background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); border-radius: 8px; outline: none; font-size: 13px;"></select>
+            <span style="color: var(--text-muted);">até</span>
+            <select id="prestacaoMesFim" onchange="renderPrestacao()" style="padding: 7px 12px; background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); border-radius: 8px; outline: none; font-size: 13px;"></select>
+            <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="addPrestacaoManualRow()">
+                <span class="material-icons-round">add</span> Novo Lançamento
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
+                <span class="material-icons-round">print</span> Imprimir / PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumo da Prestação -->
+        <div class="stats-grid" id="prestacaoStats"></div>
+
+        <!-- Cabeçalho do Documento -->
+        <div class="glass-panel" style="background: linear-gradient(135deg, rgba(30,58,138,0.3), rgba(30,64,175,0.2)); border-color: rgba(59,130,246,0.3);">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div id="prestacaoLogo" style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-green), #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;">⚽</div>
+            <div style="flex: 1;">
+              <h2 id="prestacaoGroupTitle" style="font-family: 'Outfit'; font-size: 20px; font-weight: 800;">Grupo de Futebol</h2>
+              <div id="prestacaoSubtitle" style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;"></div>
+            </div>
+            <div style="text-align: right; font-size: 12px; color: var(--text-muted);">
+              <div id="prestacaoDateRange" style="font-weight: 700; color: var(--text-secondary);"></div>
+              <div>Gerado em: <span id="prestacaoGeradoEm"></span></div>
+              <div>Gestor: <span id="prestacaoGestor" style="font-weight: 600;"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Receitas -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title" style="color: var(--accent-green);">
+              <span class="material-icons-round">add_circle</span>
+              Receitas do Período
+            </div>
+            <span style="font-size: 12px; color: var(--text-muted);">Clique nos campos para editar</span>
+          </div>
+          <div class="excel-container">
+            <table class="prestacao-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">Data</th>
+                  <th>Descrição</th>
+                  <th style="width: 130px;">Categoria</th>
+                  <th style="width: 110px; text-align: right;">Valor (R$)</th>
+                  <th style="width: 60px;" class="no-print">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="prestacaoReceitasBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" style="text-align: right; color: var(--accent-green);">Total de Receitas:</td>
+                  <td style="text-align: right; color: var(--accent-green);" id="prestacaoTotalReceitas">R$ 0,00</td>
+                  <td class="no-print"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabela de Despesas -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title" style="color: var(--accent-red);">
+              <span class="material-icons-round">remove_circle</span>
+              Despesas do Período
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm no-print" onclick="addDespesaManualRow()">
+              <span class="material-icons-round">add</span> Nova Despesa
+            </button>
+          </div>
+          <div class="excel-container">
+            <table class="prestacao-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">Data</th>
+                  <th>Descrição</th>
+                  <th style="width: 130px;">Categoria</th>
+                  <th style="width: 110px; text-align: right;">Valor (R$)</th>
+                  <th style="width: 60px;" class="no-print">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="prestacaoDespesasBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" style="text-align: right; color: var(--accent-red);">Total de Despesas:</td>
+                  <td style="text-align: right; color: var(--accent-red);" id="prestacaoTotalDespesas">R$ 0,00</td>
+                  <td class="no-print"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Saldo Final -->
+        <div class="glass-panel" id="prestacaoSaldoPanel" style="text-align: center; padding: 24px;">
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;">Saldo Final do Período</div>
+          <div id="prestacaoSaldoFinal" style="font-family: 'Outfit'; font-size: 36px; font-weight: 900; margin: 8px 0;">R$ 0,00</div>
+          <div id="prestacaoSaldoLabel" style="font-size: 13px; font-weight: 600;"></div>
+        </div>
+
+        <!-- Observações -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="material-icons-round">notes</span>
+              Observações / Notas do Gestor
+            </div>
+          </div>
+          <textarea id="prestacaoObservacoes" placeholder="Adicione observações, justificativas ou notas relevantes para esta prestação de contas..." style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: var(--text-primary); border-radius: 8px; padding: 12px; font-size: 13px; outline: none; resize: vertical; min-height: 100px; font-family: 'Inter', sans-serif;" oninput="savePrestacaoObs(this.value)"></textarea>
+        </div>
+
+        <!-- Assinatura -->
+        <div class="glass-panel print-only" style="margin-top: 40px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 16px;">
+            <div style="text-align: center; border-top: 1px solid #94a3b8; padding-top: 10px;">
+              <div id="prestacaoAssGestor" style="font-size: 13px; color: #334155; font-weight: 600;"></div>
+              <div style="font-size: 11px; color: #64748b;">Gestor do Grupo</div>
+            </div>
+            <div style="text-align: center; border-top: 1px solid #94a3b8; padding-top: 10px;">
+              <div style="font-size: 13px; color: #334155; font-weight: 600;">___________________________</div>
+              <div style="font-size: 11px; color: #64748b;">Testemunha / Representante</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
 
       <!-- Rodapé do Desenvolvedor -->
       <div class="app-dev-footer">
@@ -1419,6 +1729,8 @@
       const desc = document.getElementById('cashDesc').value.trim();
       const amount = parseFloat(document.getElementById('cashAmount').value) || 0;
       const type = document.getElementById('cashType').value;
+      const categoria = document.getElementById('cashCategoria')?.value || 'outro';
+      const dateVal = document.getElementById('cashDate')?.value || new Date().toISOString().split('T')[0];
 
       if (!desc || amount <= 0) {
         showToast('Preencha descrição e valor válido!', 'error');
@@ -1427,8 +1739,8 @@
 
       cashList.push({
         id: 'c_' + Date.now(),
-        date: new Date().toISOString().split('T')[0],
-        desc, amount, type
+        date: dateVal,
+        desc, amount, type, categoria
       });
       saveCashData(cashList);
       document.getElementById('cashDesc').value = '';
@@ -1753,6 +2065,439 @@
         showToast('❌ Chave de Licença incorreta!', 'error');
       }
     }
+
+
+    // ===== BALANÇO FINANCEIRO =====
+    const CAT_LABELS = {
+      aluguel: '🏟️ Aluguel', bola: '⚽ Bola', uniforme: '👕 Uniforme',
+      arbitragem: '🟨 Arbitragem', premiacao: '🏆 Premiação', patrocinio: '💼 Patrocínio',
+      mensalidade: '💰 Mensalidade', outro: '📎 Outro'
+    };
+
+    function initBalancoFilters() {
+      const sel = document.getElementById('balancoMonthFilter');
+      if (!sel || sel.children.length > 1) return;
+      MONTH_NAMES.slice(1).forEach((m, i) => {
+        const opt = document.createElement('option');
+        opt.value = i + 1;
+        opt.textContent = `${m} (${MONTH_LABELS[i]})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function renderBalanco() {
+      initBalancoFilters();
+      const filterMonth = document.getElementById('balancoMonthFilter')?.value || 'all';
+      const groupName = currentAdmin ? currentAdmin.groupName : 'Grupo';
+
+      // Print header
+      const pEl = document.getElementById('balancoPrintHeader');
+      if (pEl) pEl.textContent = `${groupName} · Gerado em: ${new Date().toLocaleDateString('pt-BR')}`;
+
+      // Calcular mensalidades por mês
+      const mensByMonth = Array(12).fill(0);
+      members.forEach(m => {
+        if (m.payments) {
+          Object.entries(m.payments).forEach(([k, v]) => {
+            const idx = parseInt(k);
+            if (idx >= 1 && idx <= 11) mensByMonth[idx] += (parseFloat(v) || 0);
+          });
+        }
+      });
+
+      let totalMens = 0;
+      let totalExtras = 0;
+      let totalSaidas = 0;
+
+      // Filtro de lançamentos
+      const filteredCash = filterMonth === 'all' ? cashList : cashList.filter(c => {
+        const month = parseInt((c.date || '').split('-')[1]);
+        return month === parseInt(filterMonth);
+      });
+
+      filteredCash.forEach(c => {
+        if (c.type === 'entrada') totalExtras += c.amount;
+        else totalSaidas += c.amount;
+      });
+
+      // Mensalidades filtradas
+      if (filterMonth === 'all') {
+        mensByMonth.forEach(v => totalMens += v);
+      } else {
+        totalMens = mensByMonth[parseInt(filterMonth)] || 0;
+      }
+
+      const totalReceitas = totalMens + totalExtras;
+      const saldo = totalReceitas - totalSaidas;
+
+      // Stats
+      document.getElementById('balancoStats').innerHTML = `
+        <div class="stat-card green">
+          <div class="stat-card-label">💰 Total Mensalidades</div>
+          <div class="stat-card-value">R$ ${totalMens.toFixed(2)}</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-label">📥 Receitas Extras</div>
+          <div class="stat-card-value">R$ ${totalExtras.toFixed(2)}</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-label">📤 Total Despesas</div>
+          <div class="stat-card-value">R$ ${totalSaidas.toFixed(2)}</div>
+        </div>
+        <div class="stat-card ${saldo >= 0 ? 'green' : 'red'}">
+          <div class="stat-card-label">💼 Saldo Líquido</div>
+          <div class="stat-card-value" style="color: ${saldo >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">
+            ${saldo >= 0 ? '+' : ''}R$ ${saldo.toFixed(2)}
+          </div>
+        </div>`;
+
+      // Gráfico de barras por mês
+      const maxMens = Math.max(...mensByMonth.slice(1), 1);
+      document.getElementById('balancoChart').innerHTML = MONTH_LABELS.map((lbl, i) => {
+        const val = mensByMonth[i + 1];
+        const pct = Math.round((val / maxMens) * 100);
+        return `<div class="chart-row">
+          <div class="chart-label">${lbl}</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: ${pct}%; background: linear-gradient(90deg, #10b981, #34d399);">${val > 0 ? 'R$ ' + val.toFixed(0) : ''}</div>
+          </div>
+          <div class="chart-val" style="color: var(--accent-green);">R$ ${val.toFixed(2)}</div>
+        </div>`;
+      }).join('');
+
+      // Composição Receitas
+      const entradas = [
+        { label: '💰 Mensalidades', val: totalMens, color: '#10b981' },
+        { label: '📦 Patrocínio / Extra', val: totalExtras, color: '#3b82f6' }
+      ].filter(r => r.val > 0);
+      const maxRec = Math.max(...entradas.map(r => r.val), 1);
+      document.getElementById('balancoReceitas').innerHTML = entradas.length ? entradas.map(r => `
+        <div class="chart-row" style="margin-bottom: 8px;">
+          <div class="chart-label" style="width: 160px; font-size: 12px;">${r.label}</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: ${Math.round((r.val/maxRec)*100)}%; background: ${r.color}40; color: ${r.color};">R$ ${r.val.toFixed(2)}</div>
+          </div>
+        </div>`).join('') : '<div style="padding:12px;text-align:center;color:var(--text-muted)">Sem receitas no período</div>';
+
+      // Composição Despesas por categoria
+      const desp = {};
+      filteredCash.filter(c => c.type === 'saida').forEach(c => {
+        const cat = c.categoria || 'outro';
+        desp[cat] = (desp[cat] || 0) + c.amount;
+      });
+      const maxDesp = Math.max(...Object.values(desp), 1);
+      document.getElementById('balancoDespesas').innerHTML = Object.keys(desp).length ? Object.entries(desp).map(([k, v]) => `
+        <div class="chart-row" style="margin-bottom: 8px;">
+          <div class="chart-label" style="width: 160px; font-size: 12px;">${CAT_LABELS[k] || k}</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width: ${Math.round((v/maxDesp)*100)}%; background: rgba(239,68,68,0.35); color: #f87171;">R$ ${v.toFixed(2)}</div>
+          </div>
+        </div>`).join('') : '<div style="padding:12px;text-align:center;color:var(--text-muted)">Sem despesas no período</div>';
+
+      // Histórico completo com saldo acumulado
+      const allItems = [];
+      // Mensalidades como itens individuais
+      members.forEach(m => {
+        if (!m.payments) return;
+        Object.entries(m.payments).forEach(([k, v]) => {
+          if (filterMonth !== 'all' && parseInt(k) !== parseInt(filterMonth)) return;
+          const monthNum = parseInt(k);
+          const monthName = MONTH_NAMES[monthNum] || MONTH_LABELS[monthNum - 1] || 'Mês';
+          allItems.push({ date: `2026-${String(monthNum).padStart(2,'0')}-01`, desc: `Mensalidade ${m.name} (${monthName})`, categoria: 'mensalidade', type: 'entrada', amount: parseFloat(v) || 0 });
+        });
+      });
+      filteredCash.forEach(c => allItems.push({ ...c, categoria: c.categoria || 'outro' }));
+      allItems.sort((a, b) => a.date.localeCompare(b.date));
+
+      let runSaldo = 0;
+      document.getElementById('balancoHistorico').innerHTML = allItems.map(item => {
+        runSaldo += item.type === 'entrada' ? item.amount : -item.amount;
+        const catKey = item.categoria || 'outro';
+        return `<tr>
+          <td style="white-space:nowrap; color:var(--text-muted); font-size:12px;">${item.date}</td>
+          <td style="text-align:left; font-weight:500;">${item.desc}</td>
+          <td style="text-align:center;"><span class="cat-badge cat-${catKey}">${CAT_LABELS[catKey] || catKey}</span></td>
+          <td style="text-align:center;"><span class="status-select ${item.type === 'entrada' ? 'ativo' : 'saiu'}">${item.type === 'entrada' ? 'ENTRADA' : 'SAÍDA'}</span></td>
+          <td style="font-weight:700; color:${item.type === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)'}; text-align:right;">
+            ${item.type === 'entrada' ? '+' : '-'}R$ ${item.amount.toFixed(2)}
+          </td>
+          <td style="font-weight:700; color:${runSaldo >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}; text-align:right;">
+            R$ ${runSaldo.toFixed(2)}
+          </td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="6" style="text-align:center; padding:16px; color:var(--text-muted);">Nenhum lançamento encontrado</td></tr>';
+    }
+
+    function exportBalancoPDF() {
+      let csv = 'Data;Descrição;Categoria;Tipo;Valor;Saldo Acumulado\n';
+      let runSaldo = 0;
+      const allItems = [];
+      members.forEach(m => {
+        if (!m.payments) return;
+        Object.entries(m.payments).forEach(([k, v]) => {
+          allItems.push({ date: `2026-${String(parseInt(k)).padStart(2,'0')}-01`, desc: `Mensalidade ${m.name}`, categoria: 'mensalidade', type: 'entrada', amount: parseFloat(v) || 0 });
+        });
+      });
+      cashList.forEach(c => allItems.push({ ...c, categoria: c.categoria || 'outro' }));
+      allItems.sort((a, b) => a.date.localeCompare(b.date));
+      allItems.forEach(item => {
+        runSaldo += item.type === 'entrada' ? item.amount : -item.amount;
+        csv += `${item.date};"${item.desc}";${CAT_LABELS[item.categoria] || item.categoria};${item.type === 'entrada' ? 'ENTRADA' : 'SAÍDA'};${item.amount.toFixed(2)};${runSaldo.toFixed(2)}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url;
+      a.download = `Balanco_${currentAdmin ? currentAdmin.groupName.replace(/\s+/g,'_') : 'Futebol'}.csv`;
+      a.click();
+      showToast('CSV do Balanço gerado!', 'success');
+    }
+
+    // ===== PRESTAÇÃO DE CONTAS =====
+    let prestacaoExtraReceitas = [];
+    let prestacaoExtraDespesas = [];
+
+    function initPrestacaoFilters() {
+      const selIni = document.getElementById('prestacaoMesInicio');
+      const selFim = document.getElementById('prestacaoMesFim');
+      if (!selIni || selIni.children.length > 0) return;
+      MONTH_NAMES.slice(1).forEach((m, i) => {
+        [selIni, selFim].forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = i + 1;
+          opt.textContent = `${m} (${MONTH_LABELS[i]})`;
+          sel.appendChild(opt);
+        });
+      });
+      selIni.value = 1;
+      selFim.value = 7;
+    }
+
+    function renderPrestacao() {
+      initPrestacaoFilters();
+      if (!currentAdmin) return;
+
+      const mesIni = parseInt(document.getElementById('prestacaoMesInicio')?.value || 1);
+      const mesFim = parseInt(document.getElementById('prestacaoMesFim')?.value || 7);
+
+      // Cabeçalho
+      const logo = currentAdmin.logo || '⚽';
+      const logoBox = document.getElementById('prestacaoLogo');
+      if (logoBox) {
+        if (logo.startsWith('http')) logoBox.innerHTML = `<img src="${logo}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`;
+        else logoBox.innerHTML = logo;
+      }
+      const titleEl = document.getElementById('prestacaoGroupTitle');
+      if (titleEl) titleEl.textContent = currentAdmin.groupName;
+      const subEl = document.getElementById('prestacaoSubtitle');
+      if (subEl) subEl.textContent = `${currentAdmin.groupSub || 'Temporada 2026'} · ${currentAdmin.adminName}`;
+      const dateREl = document.getElementById('prestacaoDateRange');
+      if (dateREl) dateREl.textContent = `Período: ${MONTH_NAMES[mesIni]} a ${MONTH_NAMES[mesFim]} de 2026`;
+      const geradoEl = document.getElementById('prestacaoGeradoEm');
+      if (geradoEl) geradoEl.textContent = new Date().toLocaleDateString('pt-BR');
+      const gestorEl = document.getElementById('prestacaoGestor');
+      if (gestorEl) gestorEl.textContent = currentAdmin.adminName;
+      const assEl = document.getElementById('prestacaoAssGestor');
+      if (assEl) assEl.textContent = currentAdmin.adminName;
+      const phEl = document.getElementById('prestacaoPrintHeader');
+      if (phEl) phEl.textContent = `${currentAdmin.groupName} · Período: ${MONTH_NAMES[mesIni]} a ${MONTH_NAMES[mesFim]}/2026`;
+
+      // Carregar obs salvas
+      const obsKey = getGroupStorageKey('prestacao_obs');
+      const obsEl = document.getElementById('prestacaoObservacoes');
+      if (obsEl) {
+        try { obsEl.value = localStorage.getItem(obsKey) || ''; } catch(e) {}
+      }
+
+      // Receitas: mensalidades + extras manuais
+      const receitasBody = document.getElementById('prestacaoReceitasBody');
+      const rowsReceitas = [];
+      let totalRec = 0;
+
+      // Mensalidades dos atletas no período
+      members.forEach(m => {
+        if (!m.payments) return;
+        for (let mi = mesIni; mi <= mesFim; mi++) {
+          const val = m.payments[mi];
+          if (val && val > 0) {
+            rowsReceitas.push({ id: 'mem_' + m.id + '_' + mi, date: `2026-${String(mi).padStart(2,'0')}-01`, desc: `Mensalidade – ${m.name} (${MONTH_NAMES[mi]})`, categoria: 'mensalidade', amount: parseFloat(val), editable: false });
+            totalRec += parseFloat(val);
+          }
+        }
+      });
+
+      // Receitas extras do caixa no período
+      cashList.filter(c => c.type === 'entrada').forEach(c => {
+        const month = parseInt((c.date || '').split('-')[1]);
+        if (month >= mesIni && month <= mesFim) {
+          rowsReceitas.push({ id: c.id, date: c.date, desc: c.desc, categoria: c.categoria || 'patrocinio', amount: c.amount, editable: true });
+          totalRec += c.amount;
+        }
+      });
+
+      // Linhas extras manuais adicionadas pelo usuário na tela
+      prestacaoExtraReceitas.forEach(r => {
+        rowsReceitas.push({ ...r, editable: true });
+        totalRec += parseFloat(r.amount) || 0;
+      });
+
+      if (receitasBody) {
+        receitasBody.innerHTML = rowsReceitas.map(r => `
+          <tr>
+            <td><input class="prestacao-edit" type="date" value="${r.date}" ${r.editable ? `onchange="updatePrestacaoRow('rec','${r.id}','date',this.value)"` : 'readonly style="color:var(--text-muted)"'}></td>
+            <td><input class="prestacao-edit" type="text" value="${r.desc}" ${r.editable ? `onchange="updatePrestacaoRow('rec','${r.id}','desc',this.value)"` : 'readonly style="color:var(--text-muted)"'}></td>
+            <td>
+              <select class="prestacao-edit" ${r.editable ? `onchange="updatePrestacaoRow('rec','${r.id}','categoria',this.value)"` : 'disabled'} style="padding:4px 6px;">
+                ${Object.entries(CAT_LABELS).map(([k,v]) => `<option value="${k}" ${r.categoria===k?'selected':''}>${v}</option>`).join('')}
+              </select>
+            </td>
+            <td style="text-align:right;"><input class="prestacao-edit" type="number" step="0.01" value="${(parseFloat(r.amount)||0).toFixed(2)}" ${r.editable ? `onchange="updatePrestacaoRow('rec','${r.id}','amount',parseFloat(this.value)||0)"` : 'readonly style="color:var(--text-muted)"'} style="text-align:right;"></td>
+            <td class="no-print">${r.editable ? `<button type="button" class="btn btn-danger btn-sm" onclick="removePrestacaoRow('rec','${r.id}')">✕</button>` : '<span style="color:var(--text-muted);font-size:11px;">auto</span>'}</td>
+          </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:12px;color:var(--text-muted);">Nenhuma receita no período</td></tr>';
+      }
+      const trEl = document.getElementById('prestacaoTotalReceitas');
+      if (trEl) trEl.textContent = `R$ ${totalRec.toFixed(2)}`;
+
+      // Despesas
+      const despesasBody = document.getElementById('prestacaoDespesasBody');
+      const rowsDespesas = [];
+      let totalDesp = 0;
+      cashList.filter(c => c.type === 'saida').forEach(c => {
+        const month = parseInt((c.date || '').split('-')[1]);
+        if (month >= mesIni && month <= mesFim) {
+          rowsDespesas.push({ id: c.id, date: c.date, desc: c.desc, categoria: c.categoria || 'outro', amount: c.amount, editable: true });
+          totalDesp += c.amount;
+        }
+      });
+      prestacaoExtraDespesas.forEach(r => {
+        rowsDespesas.push({ ...r, editable: true });
+        totalDesp += parseFloat(r.amount) || 0;
+      });
+
+      if (despesasBody) {
+        despesasBody.innerHTML = rowsDespesas.map(r => `
+          <tr>
+            <td><input class="prestacao-edit" type="date" value="${r.date}" onchange="updatePrestacaoRow('desp','${r.id}','date',this.value)"></td>
+            <td><input class="prestacao-edit" type="text" value="${r.desc}" onchange="updatePrestacaoRow('desp','${r.id}','desc',this.value)"></td>
+            <td>
+              <select class="prestacao-edit" onchange="updatePrestacaoRow('desp','${r.id}','categoria',this.value)" style="padding:4px 6px;">
+                ${Object.entries(CAT_LABELS).map(([k,v]) => `<option value="${k}" ${r.categoria===k?'selected':''}>${v}</option>`).join('')}
+              </select>
+            </td>
+            <td style="text-align:right;"><input class="prestacao-edit" type="number" step="0.01" value="${(parseFloat(r.amount)||0).toFixed(2)}" onchange="updatePrestacaoRow('desp','${r.id}','amount',parseFloat(this.value)||0)" style="text-align:right;"></td>
+            <td class="no-print"><button type="button" class="btn btn-danger btn-sm" onclick="removePrestacaoRow('desp','${r.id}')">✕</button></td>
+          </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:12px;color:var(--text-muted);">Nenhuma despesa no período</td></tr>';
+      }
+      const tdEl = document.getElementById('prestacaoTotalDespesas');
+      if (tdEl) tdEl.textContent = `R$ ${totalDesp.toFixed(2)}`;
+
+      // Saldo Final
+      const saldo = totalRec - totalDesp;
+      const sfEl = document.getElementById('prestacaoSaldoFinal');
+      const slEl = document.getElementById('prestacaoSaldoLabel');
+      const spEl = document.getElementById('prestacaoSaldoPanel');
+      if (sfEl) {
+        sfEl.textContent = `R$ ${saldo.toFixed(2)}`;
+        sfEl.style.color = saldo >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+      }
+      if (slEl) {
+        slEl.textContent = saldo >= 0 ? '✅ Saldo Positivo — Caixa equilibrado!' : '⚠️ Saldo Negativo — Atenção às despesas!';
+        slEl.style.color = saldo >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+      }
+      if (spEl) {
+        spEl.style.borderColor = saldo >= 0 ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)';
+      }
+
+      // Stats
+      document.getElementById('prestacaoStats').innerHTML = `
+        <div class="stat-card green">
+          <div class="stat-card-label">💰 Total de Receitas</div>
+          <div class="stat-card-value">R$ ${totalRec.toFixed(2)}</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-card-label">📤 Total de Despesas</div>
+          <div class="stat-card-value">R$ ${totalDesp.toFixed(2)}</div>
+        </div>
+        <div class="stat-card ${saldo >= 0 ? 'green' : 'red'}">
+          <div class="stat-card-label">💼 Saldo do Período</div>
+          <div class="stat-card-value" style="color:${saldo >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">R$ ${saldo.toFixed(2)}</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-card-label">👥 Atletas com Mensalidade</div>
+          <div class="stat-card-value">${rowsDespesas.length + rowsReceitas.filter(r=>r.categoria==='mensalidade').length > 0 ? members.filter(m=>Object.keys(m.payments||{}).length>0).length : 0}</div>
+        </div>`;
+    }
+
+    function updatePrestacaoRow(tipo, id, field, val) {
+      const arr = tipo === 'rec' ? prestacaoExtraReceitas : prestacaoExtraDespesas;
+      const idx = arr.findIndex(r => r.id === id);
+      if (idx !== -1) { arr[idx][field] = val; renderPrestacao(); return; }
+      // Se não é extra, é do cashList
+      const ci = cashList.findIndex(c => c.id === id);
+      if (ci !== -1) { cashList[ci][field] = val; saveCashData(cashList); renderPrestacao(); }
+    }
+
+    function removePrestacaoRow(tipo, id) {
+      if (tipo === 'rec') {
+        prestacaoExtraReceitas = prestacaoExtraReceitas.filter(r => r.id !== id);
+      } else {
+        prestacaoExtraDespesas = prestacaoExtraDespesas.filter(r => r.id !== id);
+        cashList = cashList.filter(c => c.id !== id);
+        saveCashData(cashList);
+      }
+      renderPrestacao();
+    }
+
+    function addPrestacaoManualRow() {
+      prestacaoExtraReceitas.push({ id: 'xr_' + Date.now(), date: new Date().toISOString().split('T')[0], desc: 'Nova Receita', categoria: 'outro', amount: 0, editable: true });
+      renderPrestacao();
+      showToast('Linha de receita adicionada!', 'success');
+    }
+
+    function addDespesaManualRow() {
+      const newItem = { id: 'c_' + Date.now(), date: new Date().toISOString().split('T')[0], desc: 'Nova Despesa', categoria: 'outro', amount: 0, type: 'saida' };
+      cashList.push(newItem); saveCashData(cashList);
+      renderPrestacao();
+      showToast('Linha de despesa adicionada!', 'success');
+    }
+
+    function savePrestacaoObs(val) {
+      try { localStorage.setItem(getGroupStorageKey('prestacao_obs'), val); } catch(e) {}
+    }
+
+    // Atualizar o navigateTo para incluir os novos relatórios
+    const _origNavigateTo = navigateTo;
+    navigateTo = function(page) {
+      currentPage = page;
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pageEl = document.getElementById('page-' + page);
+      if (pageEl) pageEl.classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+
+      const titles = {
+        excel: 'Planilha Geral (Excel)', dashboard: 'Dashboard',
+        financeiro: 'Caixa do Racha', devedores: 'Pagantes vs Devedores',
+        'cards-artilharia': 'Cards de Artilharia 📸', perfil: 'Perfil & Marca do Grupo',
+        backup: 'Exportação & Backup', cobrancas: 'Cobranças WhatsApp',
+        ranking: 'Ranking Gols/Cartões', trofeus: 'Quadra de Troféus',
+        balanco: '📊 Balanço Financeiro', prestacao: '📋 Prestação de Contas'
+      };
+      document.getElementById('pageTitle').textContent = titles[page] || page;
+
+      if (page === 'excel') renderExcelTable();
+      if (page === 'dashboard') renderDashboard();
+      if (page === 'financeiro') renderFinanceiro();
+      if (page === 'devedores') renderDevedores();
+      if (page === 'cards-artilharia') renderCardArtilharia();
+      if (page === 'perfil') renderAdminProfile();
+      if (page === 'cobrancas') renderCobrancas();
+      if (page === 'ranking') renderRanking();
+      if (page === 'trofeus') renderTrophies();
+      if (page === 'balanco') renderBalanco();
+      if (page === 'prestacao') renderPrestacao();
+
+      closeSidebar();
+    };
 
     autoLoginCheck();
   </script>
